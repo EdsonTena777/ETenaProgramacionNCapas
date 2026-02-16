@@ -67,7 +67,7 @@ public class UsuarioDAOImplementation implements iUsuario {
                             usuario.setEmail(resultSet.getString("EMAIL"));
                             usuario.setPassword(resultSet.getString("PASSWORD"));
                             usuario.setFechaNacimiento(resultSet.getDate("FECHANACIMIENTO"));
-                            usuario.setSexo(resultSet.getString("SEXO").charAt(0));
+                            usuario.setSexo(resultSet.getString("SEXO"));
                             usuario.setTelefono(resultSet.getString("TELEFONO"));
                             usuario.setCelular(resultSet.getString("CELULAR"));
                             usuario.setCURP(resultSet.getString("CURP"));
@@ -130,7 +130,7 @@ public class UsuarioDAOImplementation implements iUsuario {
                         usuario.setEmail(resultSet.getString("EMAIL"));
                         usuario.setPassword(resultSet.getString("PASSWORD"));
                         usuario.setFechaNacimiento(resultSet.getDate("FECHANACIMIENTO"));
-                        usuario.setSexo(resultSet.getString("SEXO").charAt(0));
+                        usuario.setSexo(resultSet.getString("SEXO"));
                         usuario.setTelefono(resultSet.getString("TELEFONO"));
                         usuario.setCelular(resultSet.getString("CELULAR"));
                         usuario.setCURP(resultSet.getString("CURP"));

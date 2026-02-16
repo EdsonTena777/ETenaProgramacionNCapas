@@ -13,7 +13,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class Usuario {
     
     private int idUsuario;
-    @NotBlank(message = "El usuario es obligatorio")
+    @NotBlank (message = "El usuario es obligatorio")
+    @Pattern (regexp = "^[a-zA-Z0-9]+$", message = "El usuario debe contener letras y numeros")
     private String Username;
     @NotBlank(message = "El nombre es obligatorio")
     @Pattern (regexp = "^[a-zA-Z ]+$", message = "El nombre solo puede contener letras")
@@ -24,21 +25,22 @@ public class Usuario {
     @Pattern (regexp = "^[a-zA-Z]+$", message = "El apellido materno solo puede contener letras")
     private String ApellidoMaterno;
     @NotBlank(message = "El email es obligatoria")
-    @Pattern(regexp ="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
+    @Pattern(regexp ="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", message = "El correo debe tener @ y dominio")
     private String Email;
     @NotBlank(message = "La contraseña es obligatoria")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%?&])[^\\s]{8,15}$", message = "Debe tener entre 8 y 15 caracteres, una mayúscula, una minúscula, un número, un carácter especial y sin espacios")
     private String Password;
+    @NotNull(message = "La fecha de nacimiento es obligatoria")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date FechaNacimiento;
     @NotNull (message = "Debe seleccionar un sexo")
-    
-    private char Sexo;
+    private String Sexo;
     @NotBlank(message = "El Telefono es obligatorio")
     @Pattern (regexp = "^[0-9]+$", message = "El telefono solo puede contener numeros")
     private String Telefono;
     @Pattern (regexp = "^[0-9]+$", message = "El telefono solo puede contener numeros")
     private String Celular;
+    private String imagen;
     @NotBlank(message = "El CURP es obligatorio")
     @Pattern (regexp = "^[A-Z0-9]+$", message = "El CURP solo puede contener numeros y letras mayusculas")
     private String CURP;
@@ -48,7 +50,8 @@ public class Usuario {
     public Usuario() {
         this.Direcciones = new ArrayList<>();
 }
-    public Usuario(int idUsuario, String Username, String Nombre, String ApellidoPaterno, String ApellidoMaterno, String Email, String Password, Date FechaNacimiento, char Sexo, String Telefono, String Celular, String CURP) {
+
+    public Usuario(int idUsuario, String Username, String Nombre, String ApellidoPaterno, String ApellidoMaterno, String Email, String Password, Date FechaNacimiento, String Sexo, String Telefono, String Celular, String imagen, String CURP, Rol Roles, List<Direccion> Direcciones) {
         this.idUsuario = idUsuario;
         this.Username = Username;
         this.Nombre = Nombre;
@@ -60,9 +63,12 @@ public class Usuario {
         this.Sexo = Sexo;
         this.Telefono = Telefono;
         this.Celular = Celular;
+        this.imagen = imagen;
         this.CURP = CURP;
-        
+        this.Roles = Roles;
+        this.Direcciones = Direcciones;
     }
+  
     
     public String getUsername(){
         return Username;
@@ -125,11 +131,11 @@ public class Usuario {
         this.FechaNacimiento = FechaNacimiento;
     }    
     
-    public char getSexo(){
+    public String getSexo(){
         return Sexo;
     }
     
-    public void setSexo(char Sexo){
+    public void setSexo(String Sexo){
         this.Sexo = Sexo;
     }
     
@@ -172,5 +178,14 @@ public class Usuario {
     public void setDirecciones(List<Direccion> Direcciones) {
         this.Direcciones = Direcciones;
     }
+
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
+    }
+    
     
 }

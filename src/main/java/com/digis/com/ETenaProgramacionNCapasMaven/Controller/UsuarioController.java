@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping
@@ -89,7 +90,7 @@ public class UsuarioController {
     }
     
     @PostMapping("/form")
-    public String form(@Valid @ModelAttribute("usuario") Usuario usuario, BindingResult bindingResult, Model model){
+    public String form(@Valid @ModelAttribute("usuario") Usuario usuario, BindingResult bindingResult, @RequestParam("imagenFile") MultipartFile imagenFile, Model model){
         if(bindingResult.hasErrors()){
             bindingResult.getAllErrors().forEach(error -> {
             System.out.println(error.getDefaultMessage());
@@ -143,10 +144,24 @@ public class UsuarioController {
             }else{
                 model.addAttribute("colonias", new ArrayList<>());
             }
-
             return "Formulario";
             }
-        usuarioDAOImplementation.UsuarioDireccionADDSP(usuario);
+       /* usuarioDAOImplementation.UsuarioDireccionADDSP(usuario); 
+        return "redirect:/usuario";*/
+        String nombreArchivo = imagenFile.getOriginalFilename(); //Nxus.png / personita.jpg
+        //1. Expresión regular 
+        //2. Cortar la palabra
+        String[] cadena = nombreArchivo.split("\\.");
+        if (cadena[1].equals("jpg") || cadena[1].equals("png")) {
+            //convierto imagen a base 64, y la cargo en el modelo alumno 
+            System.out.println("Imagen");
+            // realizar la conversión de imagen a base 64; 
+        } else if (imagenFile != null){
+            //retorno error de archivo no permititido y regreso a formulario 
+            System.out.println("Error");
+        }
+        System.out.println("Agregar");
+        //proceso de agregar datos y retorno a vista de todos los usuarios
         return "redirect:/usuario";
     }
     
