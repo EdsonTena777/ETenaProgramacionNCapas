@@ -9,8 +9,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.*; 
 
-
-
 @Repository 
 public class UsuarioDAOImplementation implements iUsuario {
     
@@ -137,7 +135,6 @@ public class UsuarioDAOImplementation implements iUsuario {
                         usuario.Direcciones = new ArrayList<>();
                     }
 
-                    // cada fila es una dirección
                     Direccion direccion = new Direccion();
                     direccion.Colonia = new Colonia();
                     direccion.Colonia.Municipio = new Municipio();
@@ -174,26 +171,28 @@ public class UsuarioDAOImplementation implements iUsuario {
     public Result UsuarioDireccionADDSP(Usuario usuario){
         Result result = new Result();
         
-        try{jdbcTemplate.execute("{CALL UsuarioDireccionADDSP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}", (CallableStatementCallback<Boolean>)callableStatement -> {
+        try{jdbcTemplate.execute("{CALL UsuarioDireccionADDSP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}", (CallableStatementCallback<Boolean>)callableStatement -> {
             callableStatement.setString(1,usuario.getUsername());
-            callableStatement.setString(2,usuario.getNombre());
-            callableStatement.setString(3,usuario.getApellidoPaterno());
-            callableStatement.setString(4, usuario.getApellidoMaterno());
-            callableStatement.setString(5, usuario.getTelefono());
-            callableStatement.setString(6, usuario.getEmail());
-            callableStatement.setString(7, usuario.getPassword());
+            byte[] imagenBytes = java.util.Base64.getDecoder().decode(usuario.getImagen());
+            callableStatement.setBytes(2, imagenBytes); 
+            callableStatement.setString(3,usuario.getNombre());
+            callableStatement.setString(4,usuario.getApellidoPaterno());
+            callableStatement.setString(5, usuario.getApellidoMaterno());
+            callableStatement.setString(6, usuario.getTelefono());
+            callableStatement.setString(7, usuario.getEmail());
+            callableStatement.setString(8, usuario.getPassword());
             
-            callableStatement.setDate(8, new java.sql.Date(usuario.getFechaNacimiento().getTime()));
-            callableStatement.setString(9, String.valueOf(usuario.getSexo()));
-            callableStatement.setString(10, usuario.getCelular());
-            callableStatement.setString(11, usuario.getCURP());
-            callableStatement.setInt(12, usuario.getRoles().getIdRol());
+            callableStatement.setDate(9, new java.sql.Date(usuario.getFechaNacimiento().getTime()));
+            callableStatement.setString(10, String.valueOf(usuario.getSexo()));
+            callableStatement.setString(11, usuario.getCelular());
+            callableStatement.setString(12, usuario.getCURP());
+            callableStatement.setInt(13, usuario.getRoles().getIdRol());
             
             Direccion direccion = usuario.getDirecciones().get(0);
-            callableStatement.setString(13,direccion.getCalle());
-            callableStatement.setString(14, direccion.getNumeroInterior());
-            callableStatement.setString(15,direccion.getNumeroExterior());
-            callableStatement.setInt(16,direccion.getColonia().getidColonia());
+            callableStatement.setString(14,direccion.getCalle());
+            callableStatement.setString(15, direccion.getNumeroInterior());
+            callableStatement.setString(16,direccion.getNumeroExterior());
+            callableStatement.setInt(17,direccion.getColonia().getidColonia());
             
             callableStatement.execute();
             

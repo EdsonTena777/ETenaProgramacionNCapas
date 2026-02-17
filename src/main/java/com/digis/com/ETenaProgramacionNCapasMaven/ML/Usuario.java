@@ -16,6 +16,7 @@ public class Usuario {
     @NotBlank (message = "El usuario es obligatorio")
     @Pattern (regexp = "^[a-zA-Z0-9]+$", message = "El usuario debe contener letras y numeros")
     private String Username;
+    private String imagen;
     @NotBlank(message = "El nombre es obligatorio")
     @Pattern (regexp = "^[a-zA-Z ]+$", message = "El nombre solo puede contener letras")
     private String Nombre;
@@ -40,7 +41,6 @@ public class Usuario {
     private String Telefono;
     @Pattern (regexp = "^[0-9]+$", message = "El telefono solo puede contener numeros")
     private String Celular;
-    private String imagen;
     @NotBlank(message = "El CURP es obligatorio")
     @Pattern (regexp = "^[A-Z0-9]+$", message = "El CURP solo puede contener numeros y letras mayusculas")
     private String CURP;
@@ -68,7 +68,6 @@ public class Usuario {
         this.Roles = Roles;
         this.Direcciones = Direcciones;
     }
-  
     
     public String getUsername(){
         return Username;

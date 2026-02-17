@@ -15,6 +15,7 @@ import com.digis.com.ETenaProgramacionNCapasMaven.ML.Result;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Rol;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Usuario;
 import jakarta.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -148,20 +149,29 @@ public class UsuarioController {
             }
        /* usuarioDAOImplementation.UsuarioDireccionADDSP(usuario); 
         return "redirect:/usuario";*/
-        String nombreArchivo = imagenFile.getOriginalFilename(); //Nxus.png / personita.jpg
-        //1. Expresión regular 
-        //2. Cortar la palabra
-        String[] cadena = nombreArchivo.split("\\.");
-        if (cadena[1].equals("jpg") || cadena[1].equals("png")) {
-            //convierto imagen a base 64, y la cargo en el modelo alumno 
-            System.out.println("Imagen");
-            // realizar la conversión de imagen a base 64; 
-        } else if (imagenFile != null){
-            //retorno error de archivo no permititido y regreso a formulario 
-            System.out.println("Error");
-        }
-        System.out.println("Agregar");
-        //proceso de agregar datos y retorno a vista de todos los usuarios
+            if (imagenFile != null && !imagenFile.isEmpty()) {
+                String nombreArchivo = imagenFile.getOriginalFilename();
+                String extension = nombreArchivo.substring(nombreArchivo.lastIndexOf(".") + 1).toLowerCase();
+
+            try {
+                if (extension.equals("jpg") || extension.equals("png") || extension.equals("jpeg")) {
+                    byte[] bytes = imagenFile.getBytes();
+                    String imagenBase64 = java.util.Base64.getEncoder().encodeToString(bytes);
+                    usuario.setImagen(imagenBase64); 
+                    System.out.println("Imagen procesada correctamente");
+                } else {
+                    System.out.println("Formato no permitido: " + extension);
+                    // Opcional: model.addAttribute("errorImagen", "Formato no permitido");
+                }
+            } catch (IOException e) {
+                System.out.println("Error al procesar los bytes de la imagen: " + e.getMessage());
+            }
+            } else {
+                System.out.println("No se envió ninguna imagen, se procede con el resto de los datos.");
+            }
+
+        System.out.println("Ejecutando procedimiento de guardado...");
+        usuarioDAOImplementation.UsuarioDireccionADDSP(usuario);
         return "redirect:/usuario";
     }
     
