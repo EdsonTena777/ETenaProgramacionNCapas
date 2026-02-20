@@ -1,6 +1,9 @@
 
 package com.digis.com.ETenaProgramacionNCapasMaven.ML;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -15,35 +18,47 @@ public class Usuario {
     private int idUsuario;
     @NotBlank (message = "El usuario es obligatorio")
     @Pattern (regexp = "^[a-zA-Z0-9]+$", message = "El usuario debe contener letras y numeros")
+    @JsonProperty("username")
     private String Username;
     private String imagen;
     @NotBlank(message = "El nombre es obligatorio")
     @Pattern (regexp = "^[a-zA-Z ]+$", message = "El nombre solo puede contener letras")
+    @JsonProperty("nombre")
     private String Nombre;
     @NotBlank(message = "El Apellido paterno es obligatorio")
     @Pattern (regexp = "^[a-zA-Z]+$", message = "El apellido paterno solo puede contener letras")
+    @JsonProperty("apellidoPaterno")
     private String ApellidoPaterno;
     @Pattern (regexp = "^[a-zA-Z]+$", message = "El apellido materno solo puede contener letras")
+    @JsonProperty("apellidoMaterno")
     private String ApellidoMaterno;
     @NotBlank(message = "El email es obligatoria")
     @Pattern(regexp ="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", message = "El correo debe tener @ y dominio")
+    @JsonProperty("email")
     private String Email;
     @NotBlank(message = "La contraseña es obligatoria")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%?&])[^\\s]{8,15}$", message = "Debe tener entre 8 y 15 caracteres, una mayúscula, una minúscula, un número, un carácter especial y sin espacios")
     private String Password;
     @NotNull(message = "La fecha de nacimiento es obligatoria")
+    @JsonProperty("fechaNacimiento")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date FechaNacimiento;
     @NotNull (message = "Debe seleccionar un sexo")
+    @JsonProperty("sexo")
     private String Sexo;
     @NotBlank(message = "El Telefono es obligatorio")
     @Pattern (regexp = "^[0-9]+$", message = "El telefono solo puede contener numeros")
+    @JsonProperty("telefono")
     private String Telefono;
     @Pattern (regexp = "^[0-9]+$", message = "El telefono solo puede contener numeros")
+    @JsonProperty("celular")
     private String Celular;
     @NotBlank(message = "El CURP es obligatorio")
     @Pattern (regexp = "^[A-Z0-9]+$", message = "El CURP solo puede contener numeros y letras mayusculas")
+    @JsonProperty("curp")
     private String CURP;
+    @JsonProperty("roles")
     public Rol Roles;
     public List<Direccion> Direcciones;
     

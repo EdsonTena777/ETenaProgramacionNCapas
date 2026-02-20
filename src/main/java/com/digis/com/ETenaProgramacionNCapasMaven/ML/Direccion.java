@@ -16,10 +16,10 @@ public class Direccion {
     public void setUsuario(Usuario Usuario) {
         this.Usuario = Usuario;
     }
-    public int getidDireccion(){
+    public int getIdDireccion(){
         return idDireccion;
     }
-    public void setidDireccion(int idDireccion){
+    public void setIdDireccion(int idDireccion){
         this.idDireccion = idDireccion;
     }
     

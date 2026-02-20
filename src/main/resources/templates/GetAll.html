@@ -11,7 +11,7 @@
         <div class="container-fluid">
                 <div class="d-flex align-items-center p-3 my-3 text-white bg-primary rounded shadow-sm">
             <div class="col-6">
-                <h5 class="text-white mt-2 ">Creación de usuario</h5>
+                <h5 class="text-white mt-2 ">Lista de usuario</h5>
             </div>
             <div class="col-2 py-4 text-center">  
             </div>
@@ -26,14 +26,23 @@
                     <table class="table table-bordered align-middle shadow-lg rounded">
                         <thead class="table-light text-center">
                             <tr>
-                                <th scope="col" style="width: 26%;">Perfil de Usuario</th>
-                                <th scope="col" style="width: 26%">Contacto</th>
-                                <th scope="col" style="width: 26%">Dirección</th>
-                                <th scope="col" style="width: 21%">Acciones</th>
+                                <th scope="col" style="width: 15%;">Imagen de Usuario</th>
+                                <th scope="col" style="width: 22%;">Perfil de Usuario</th>
+                                <th scope="col" style="width: 24%">Contacto</th>
+                                <th scope="col" style="width: 24%">Dirección</th>
+                                <th scope="col" style="width: 15%">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="usuario : ${usuarios}">
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <div class="d-flex justify-content-center">
+                                            <img th:if="${usuario.imagen != null}" th:src="'data:image/jpeg;base64,' + ${usuario.imagen}" style="max-width: 150px; margin-bottom: 20px; max-height: auto" class="img-thumbnail mx-auto d-block"/>
+                                            <img th:unless="${usuario.imagen != null}"  th:src="@{/img/usuario.png}" style="max-width: 150px; margin-bottom: 20px; max-height: auto" class="img-thumbnail mx-auto d-block"/>
+                                        </div>
+                                    </div>
+                                </td>
                                 <td>
                                     <div class="d-flex flex-column">
                                         <span class="fw-semibold fs-5 text-dark" th:text="|${usuario.Nombre} ${usuario.ApellidoPaterno} ${usuario.ApellidoMaterno ?: ''} |"></span>
@@ -42,7 +51,7 @@
                                             <i class="bi bi-calendar-event"></i> 
                                             <span th:text="${#dates.format(usuario.FechaNacimiento, 'dd-MMM-yyyy')}"></span>
                                         </div>
-                                        <span class="fw-light">Genero: <span th:text="${usuario.Sexo.toString() == 'M' ? 'Masculino' : 'Femenino'}"></span></span>
+                                        <span class="fw-light">Genero: <span th:text="${'M'.equals(usuario.Sexo)} ? 'Masculino' : 'Femenino'"></span></span>
                                         <div class="mt-1">
                                             <small class="text-muted">CURP:</small> 
                                             <code class="bold text-primary" th:text="${usuario.CURP}"></code>
@@ -50,9 +59,9 @@
                                     </div>
                                 </td>
                                 <td>
-                                    
                                     <div class="mb-1"><i class="bi bi-envelope-at"><span th:text=" ${usuario.Email}"></span></i> </div>
-                                    <div class="fw-bold"><i class="bi bi-phone"><span th:text=" ${usuario.Telefono}"></span></i> </div>
+                                    <div class="fw-bold"><i class="bi bi-telephone"><span th:text=" ${usuario.Telefono}"></span></i> </div>
+                                    <div class="fw-bold"><i class="bi bi-phone"><span th:text=" ${usuario.Celular}"></span></i> </div>
                                 </td>
                                 <td>
                                     <div th:each="direccion : ${usuario.Direcciones}" class="border-bottom mb-2 pb-1">
@@ -66,7 +75,7 @@
                                 </td>
                                 <td>
                                     <div class="btn btn-danger bi bi-trash w-25"></div>
-                                    <a th:href="@{/GetById(idUsuario=${usuario.idUsuario})}" class="btn btn-warning bi bi-pencil w-25"> </a>
+                                    <a th:href="@{/GetById(idUsuario=${usuario.idUsuario})}" class="btn btn-primary bi bi-person-circle w-25"> </a>
                                 </td>
                             </tr>
                         </tbody>

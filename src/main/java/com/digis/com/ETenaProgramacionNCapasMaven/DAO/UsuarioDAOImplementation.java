@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.*; 
+import java.io.StringReader;
 
 @Repository 
 public class UsuarioDAOImplementation implements iUsuario {
@@ -40,7 +41,7 @@ public class UsuarioDAOImplementation implements iUsuario {
                         direccion.Colonia.Municipio.Estado = new Estado();
                         direccion.Colonia.Municipio.Estado.Pais = new Pais();
                         
-                        direccion.setidDireccion(resultSet.getInt("idDireccion"));
+                        direccion.setIdDireccion(resultSet.getInt("idDireccion"));
                         direccion.setCalle(resultSet.getString("Calle"));
                         direccion.setNumeroInterior(resultSet.getString("NumeroInterior"));
                         direccion.setNumeroExterior(resultSet.getString("NumeroExterior"));
@@ -59,13 +60,14 @@ public class UsuarioDAOImplementation implements iUsuario {
                             Usuario usuario = new Usuario();
                             usuario.setIdUsuario(resultSet.getInt("IDUSUARIO"));
                             usuario.setUsername(resultSet.getString("USERNAME"));
+                            usuario.setImagen(resultSet.getString("IMAGEN"));
                             usuario.setNombre(resultSet.getString("NombreUsuario"));
                             usuario.setApellidoPaterno(resultSet.getString("APELLIDOPATERNO"));
                             usuario.setApellidoMaterno(resultSet.getString("APELLIDOMATERNO"));
                             usuario.setEmail(resultSet.getString("EMAIL"));
                             usuario.setPassword(resultSet.getString("PASSWORD"));
                             usuario.setFechaNacimiento(resultSet.getDate("FECHANACIMIENTO"));
-                            usuario.setSexo(resultSet.getString("SEXO"));
+                            usuario.setSexo(resultSet.getString("SEXO").trim());
                             usuario.setTelefono(resultSet.getString("TELEFONO"));
                             usuario.setCelular(resultSet.getString("CELULAR"));
                             usuario.setCURP(resultSet.getString("CURP"));
@@ -79,7 +81,7 @@ public class UsuarioDAOImplementation implements iUsuario {
                             direccion.Colonia.Municipio.Estado = new Estado();
                             direccion.Colonia.Municipio.Estado.Pais = new Pais();
                             
-                            direccion.setidDireccion(resultSet.getInt("idDireccion"));
+                            direccion.setIdDireccion(resultSet.getInt("idDireccion"));
                             direccion.setCalle(resultSet.getString("Calle"));
                             direccion.setNumeroInterior(resultSet.getString("NumeroInterior"));
                             direccion.setNumeroExterior(resultSet.getString("NumeroExterior"));
@@ -120,6 +122,7 @@ public class UsuarioDAOImplementation implements iUsuario {
                 while(resultSet.next()){
                     if(usuario == null){ 
                         usuario = new Usuario();
+                        usuario.setRoles(new Rol());
                         usuario.setIdUsuario(resultSet.getInt("IDUSUARIO"));
                         usuario.setUsername(resultSet.getString("USERNAME"));
                         usuario.setNombre(resultSet.getString("NombreUsuario"));
@@ -128,10 +131,13 @@ public class UsuarioDAOImplementation implements iUsuario {
                         usuario.setEmail(resultSet.getString("EMAIL"));
                         usuario.setPassword(resultSet.getString("PASSWORD"));
                         usuario.setFechaNacimiento(resultSet.getDate("FECHANACIMIENTO"));
-                        usuario.setSexo(resultSet.getString("SEXO"));
+                        usuario.setSexo(resultSet.getString("SEXO").trim());
                         usuario.setTelefono(resultSet.getString("TELEFONO"));
                         usuario.setCelular(resultSet.getString("CELULAR"));
                         usuario.setCURP(resultSet.getString("CURP"));
+                        usuario.setImagen(resultSet.getString("IMAGEN"));
+                        usuario.getRoles().setIdRol(resultSet.getInt("IdRol"));
+                        usuario.getRoles().setNombreRol(resultSet.getString("NombreRol"));
                         usuario.Direcciones = new ArrayList<>();
                     }
 
@@ -141,7 +147,7 @@ public class UsuarioDAOImplementation implements iUsuario {
                     direccion.Colonia.Municipio.Estado = new Estado();
                     direccion.Colonia.Municipio.Estado.Pais = new Pais();
 
-                    direccion.setidDireccion(resultSet.getInt("idDireccion"));
+                    direccion.setIdDireccion(resultSet.getInt("idDireccion"));
                     direccion.setCalle(resultSet.getString("Calle"));
                     direccion.setNumeroInterior(resultSet.getString("NumeroInterior"));
                     direccion.setNumeroExterior(resultSet.getString("NumeroExterior"));
@@ -173,8 +179,7 @@ public class UsuarioDAOImplementation implements iUsuario {
         
         try{jdbcTemplate.execute("{CALL UsuarioDireccionADDSP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}", (CallableStatementCallback<Boolean>)callableStatement -> {
             callableStatement.setString(1,usuario.getUsername());
-            byte[] imagenBytes = java.util.Base64.getDecoder().decode(usuario.getImagen());
-            callableStatement.setBytes(2, imagenBytes); 
+            callableStatement.setString(2, usuario.getImagen());
             callableStatement.setString(3,usuario.getNombre());
             callableStatement.setString(4,usuario.getApellidoPaterno());
             callableStatement.setString(5, usuario.getApellidoMaterno());
@@ -201,6 +206,72 @@ public class UsuarioDAOImplementation implements iUsuario {
         );
             result.correct = true;
         }catch (Exception ex){
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        return result;
+    }
+    @Override
+    public Result UPDUsuarioSP(Usuario usuario){
+        Result result = new Result();
+        try{
+            jdbcTemplate.execute("{CALL UsuarioUPDSP(?,?,?,?,?,?,?,?,?,?,?,?)}", (CallableStatementCallback<Boolean>)callableStatement -> {
+                callableStatement.setInt(1, usuario.getIdUsuario());
+                callableStatement.setString(2,usuario.getUsername());
+                callableStatement.setString(3,usuario.getNombre());
+                callableStatement.setString(4,usuario.getApellidoPaterno());
+                callableStatement.setString(5, usuario.getApellidoMaterno());
+                callableStatement.setString(6, usuario.getEmail());
+                callableStatement.setString(7, String.valueOf(usuario.getSexo()));
+                callableStatement.setString(8, usuario.getTelefono());
+                callableStatement.setString(9, usuario.getCelular());
+                callableStatement.setString(10, usuario.getCURP());
+                callableStatement.setDate(11, new java.sql.Date(usuario.getFechaNacimiento().getTime()));
+                callableStatement.setInt(12, usuario.getRoles().getIdRol());
+                callableStatement.execute();
+                return true;
+            });
+            result.correct=true;
+        }catch (Exception ex){
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        return result;
+    }
+    @Override
+    public Result DELUsuarioSP(Usuario usuario){
+        Result result = new Result();
+        try{
+            jdbcTemplate.execute("{CALL UsuarioDELSP(?)}", (CallableStatementCallback<Boolean>) callableStatement -> {
+                callableStatement.setInt(1, usuario.getIdUsuario());
+                callableStatement.execute();
+                return true;
+            });
+            result.correct = true;
+        
+        }catch(Exception ex){
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+    return result;
+    }
+    
+    @Override
+    public Result UPDUsuarioImagenSP(Usuario usuario){
+        Result result = new Result();
+        try{
+            jdbcTemplate.execute("{CALL UsuarioImagenUPDSP(?,?)}", (CallableStatementCallback<Boolean>) callableStatement -> {
+                callableStatement.setInt(1, usuario.getIdUsuario());
+                callableStatement.setString(2, usuario.getImagen());
+                callableStatement.execute();
+                return true;
+            });
+            result.correct = true;
+        
+        }catch(Exception ex){
             result.correct = false;
             result.errorMessage = ex.getLocalizedMessage();
             result.ex = ex;

@@ -1,8 +1,10 @@
 
 package com.digis.com.ETenaProgramacionNCapasMaven.ML;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Rol {
-    
+    @JsonProperty("idRol")
     private int idRol;
     private String NombreRol;
 

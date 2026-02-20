@@ -27,7 +27,7 @@
     <div class="row mb-4">
         <h5 class="text-primary mb-3">Informacion</h5>
             <label for="imagenFile" class="form-label fw-bold">Imagen</label>
-            <img id="previewImage" style="max-width: 250px; margin-bottom: 20px; max-height: auto" class="mx-auto" th:src="'data:image/png;base64,' + ${usuario.imagen}"/>
+            <img id="previewImage" style="max-width: 250px; margin-bottom: 20px; max-height: auto" class="mx-auto" th:src="${usuario.imagen != null && !#strings.isEmpty(usuario.imagen)} ? 'data:image/png;base64,' + ${usuario.imagen} : @{/img/usuario.png}"/>
             <input type="file" class="form-control mb-3 mx-1" name="imagenFile" id="imagenFile" accept="image/*">
         <div class="col-md-4">
             <label for="NombreUsuario" class="form-label">Nombre</label>
@@ -141,18 +141,30 @@
                 <label class="form-label">Estado</label>
                 <select id="ddlEstado" class="form-select" th:field="*{Direcciones[0].Colonia.Municipio.Estado.idEstado}">
                     <option value=0 selected>Selecciona un estado</option>
+                    <option th:each="estado : ${estados}"
+                            th:value="${estado.idEstado}"
+                            th:text="${estado.Nombre}">
+                    </option>
                 </select>
             </div>
             <div class="col-md-3">
                 <label class="form-label">Municipio</label>
                 <select id="ddlMunicipio" class="form-select" th:field="*{Direcciones[0].Colonia.Municipio.idMunicipio}">
                     <option value=0 selected>Selecciona un municipio</option>
+                    <option th:each="municipio : ${municipios}"
+                            th:value="${municipio.idMunicipio}"
+                            th:text="${municipio.Nombre}">
+                    </option>
                 </select>
             </div>
             <div class="col-md-4">
                 <label class="form-label">Colonia</label>
                 <select id="ddlColonia" class="form-select" th:field="*{Direcciones[0].Colonia.idColonia}">
                     <option value=0 selected>Selecciona una colonia</option>
+                    <option th:each="colonia : ${colonias}"
+                            th:value="${colonia.idColonia}"
+                            th:text="${colonia.Nombre}">
+                    </option>
                 </select>
             </div>
         </div>
@@ -204,7 +216,7 @@
             reader.readAsDataURL(input.files[0]);
         }
     });
-});
+    });
     $(document).ready(function(){
         $("#ddlPais").change(function(){
             var idPais = $("#ddlPais").val();
@@ -319,7 +331,7 @@
         $("#ddlCodigoPostal").append('<option value="0">CP</option>');
         $("#ddlCodigoPostal").prop("disabled", true);
     }
-}); 
+    }); 
     function SoloLetraNombre(input, event){
         var valorCompleto = $(input).val() + event.key
         console.log(valorCompleto)

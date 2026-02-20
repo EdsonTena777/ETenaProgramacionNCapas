@@ -2,6 +2,7 @@
 package com.digis.com.ETenaProgramacionNCapasMaven.Controller;
 
 import com.digis.com.ETenaProgramacionNCapasMaven.DAO.ColoniaDAOImplementation;
+import com.digis.com.ETenaProgramacionNCapasMaven.DAO.DireccionDAOImplementation;
 import com.digis.com.ETenaProgramacionNCapasMaven.DAO.EstadoDAOImplementation;
 import com.digis.com.ETenaProgramacionNCapasMaven.DAO.MunicipioDAOImplementation;
 import com.digis.com.ETenaProgramacionNCapasMaven.DAO.PaisDAOImplementation;
@@ -15,8 +16,8 @@ import com.digis.com.ETenaProgramacionNCapasMaven.ML.Result;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Rol;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Usuario;
 import jakarta.validation.Valid;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -52,6 +54,9 @@ public class UsuarioController {
     @Autowired
     private ColoniaDAOImplementation coloniaDAOImplementation;
     
+    @Autowired
+    private DireccionDAOImplementation direccionDAOImplementation;
+    
     @GetMapping("/usuario")
     public String index(Model model){
         Result result = usuarioDAOImplementation.GetAll();
@@ -69,6 +74,22 @@ public class UsuarioController {
         
         return "GetById";
     }
+    @GetMapping("/UsuarioDetail")
+        public String UsuarioDetail(@RequestParam int idUsuario, Model model){
+
+        Result resultDirecciones = direccionDAOImplementation.GetByUsuarioId(idUsuario);
+        Result resultUsuario = usuarioDAOImplementation.GetById(idUsuario);
+        Result resultRol = rolDAOImplementation.rolGetAll();
+        
+        Usuario usuario = (Usuario) resultUsuario.object;
+        usuario.Direcciones = (List<Direccion>) (List<?>) resultDirecciones.objects;
+
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("roles", resultRol.objects);
+
+        return "UsuarioDetail";
+    }
+
     
     @GetMapping("/form")
     public String form(Model model){
@@ -147,8 +168,7 @@ public class UsuarioController {
             }
             return "Formulario";
             }
-       /* usuarioDAOImplementation.UsuarioDireccionADDSP(usuario); 
-        return "redirect:/usuario";*/
+       
             if (imagenFile != null && !imagenFile.isEmpty()) {
                 String nombreArchivo = imagenFile.getOriginalFilename();
                 String extension = nombreArchivo.substring(nombreArchivo.lastIndexOf(".") + 1).toLowerCase();
@@ -161,19 +181,37 @@ public class UsuarioController {
                     System.out.println("Imagen procesada correctamente");
                 } else {
                     System.out.println("Formato no permitido: " + extension);
-                    // Opcional: model.addAttribute("errorImagen", "Formato no permitido");
+                    
                 }
-            } catch (IOException e) {
-                System.out.println("Error al procesar los bytes de la imagen: " + e.getMessage());
+            } catch (Exception ex) {
+                return "Formulario";
             }
             } else {
-                System.out.println("No se envió ninguna imagen, se procede con el resto de los datos.");
+                System.out.println("Se conserva la imagen");
             }
 
         System.out.println("Ejecutando procedimiento de guardado...");
         usuarioDAOImplementation.UsuarioDireccionADDSP(usuario);
         return "redirect:/usuario";
     }
+    @PostMapping("/usuario/updateImagen")
+    @ResponseBody
+    public boolean UpdateImagen(@RequestBody Usuario usuario){
+
+        Result result = usuarioDAOImplementation.UPDUsuarioImagenSP(usuario);
+
+        return result.correct;
+    }
+    @PostMapping("/usuario/update")
+    @ResponseBody
+    public Result updateUsuario(@RequestBody Usuario usuario){
+        return usuarioDAOImplementation.UPDUsuarioSP(usuario);
+    }
+    @PostMapping("/usuario/updateDireccion")
+    @ResponseBody
+    public Result updateDireccion(@RequestBody Direccion direccion){
+        return direccionDAOImplementation.UPDDireccionSP(direccion);
+    } 
     
     @GetMapping("/usuario/estados/{idPais}")
     @ResponseBody

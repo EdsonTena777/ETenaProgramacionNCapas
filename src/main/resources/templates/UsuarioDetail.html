@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">    
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    </head>
+    <body class="bg-light">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center p-3 my-3 text-white bg-primary rounded shadow-sm">
+                <div class="col-6">
+                    <h5 class="text-white mt-2 ">Edición de usuario</h5>
+                </div>
+                <div class="col-2 py-4 text-center">  
+                </div>
+                <div class="col-4 text-center">
+                    <a href="/usuario" class="btn btn-warning w-25 rounded bi bi-arrow-return-left"></a>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid py-2 px-3">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="p-4 shadow-lg rounded bg-white h-100">
+                        <div class="col-md-12 mb-5">
+                            <label class="form-label fw-bold">Imagen</label>
+                            <img th:if="${usuario.imagen != null}" th:src="'data:image/jpeg;base64,' + ${usuario.imagen}" style="max-width: 250px; margin-bottom: 20px; max-height: auto" class="img-thumbnail mx-auto d-block"/>
+                            <img th:unless="${usuario.imagen != null}"  th:src="@{/img/usuario.png}" style="max-width: 250px; margin-bottom: 20px; max-height: auto" class="img-thumbnail mx-auto d-block"/>
+                        </div>
+                        <div class="col-md-12 mb-5 text-end">
+                            <button type="button" class="btn btn-warning bi bi-pencil-square" data-bs-toggle="modal" data-bs-target="#myModal">Editar</button>
+                            <div id="myModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Cambiar imagen</h5>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                            <img id="ImagenPrincipal" style="max-width: 250px; margin-bottom: 20px" th:if="${usuario.imagen != null}" th:src="'data:image/png;base64,' + ${usuario.imagen}"/>
+                                            <img id="ImagenPrincipal" th:unless="${usuario.imagen != null}"  th:src="@{/img/usuario.png}" style="max-width: 250px; margin-bottom: 20px; max-height: auto" class="img-thumbnail mx-auto d-block"/>
+                                            <input type="file" class="form-control mb-3 mx-1" name="imagenFile" id="imagenFile" accept="image/*">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                                            <button type="button" id="btnActualizarImagen" class="btn btn-success">Actualizar Imagen</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <label class="form-label fw-bold">Información</label>
+                        <div class="row mb-4 mt-4">
+                            <div class="col-md-4">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" class="form-control" th:value="${usuario.Nombre}" readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Apellido Paterno</label>
+                                <input type="text" class="form-control" th:value="${usuario.ApellidoPaterno}" readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Apellido Materno</label>
+                                <input type="text" class="form-control" th:value="${usuario.ApellidoMaterno}" readonly>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <label class="form-label">CURP</label>
+                                <input type="text" class="form-control" th:value="${usuario.CURP}" readonly>
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="form-label">Fecha de nacimiento</label>
+                                <input type="date" class="form-control" th:value="${#dates.format(usuario.FechaNacimiento,'yyyy-MM-dd')}" readonly>
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="form-label">Sexo</label>
+                                <input type="text" class="form-control" th:value="${usuario.Sexo.toString() == 'M' ? 'Masculino' : 'Femenino'}" readonly>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <label class="form-label">Usuario</label>
+                                <input type="text" class="form-control" th:value="${usuario.Username}" readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Rol</label>
+                                <input type="text" class="form-control" th:value="${usuario.roles.NombreRol}" readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Email</label>
+                                <input type="text" class="form-control" th:value="${usuario.Email}" readonly>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Telefono</label>
+                                <input type="text" class="form-control" th:value="${usuario.Telefono}" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Celular</label>
+                                <input type="text" class="form-control" th:value="${usuario.Celular}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-5 text-end">
+                            <button type="button" class="btn btn-warning bi bi-pencil-square" data-bs-toggle="modal" data-bs-target="#EInformacion">Editar</button>
+                            <div id="EInformacion" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Editar información</h5>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                            <div class="row mb-4">
+                                                <div class="col-md-4">
+                                                    <label class="form-label">Nombre</label>
+                                                    <input type="text" class="form-control" id="Nombre" th:value="${usuario.Nombre}">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label">Apellido Paterno</label>
+                                                    <input type="text" class="form-control" id="ApellidoPaterno" th:value="${usuario.ApellidoPaterno}" >
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label">Apellido Materno</label>
+                                                    <input type="text" class="form-control" id="ApellidoMaterno" th:value="${usuario.ApellidoMaterno}">
+                                                </div>
+                                            </div>
+                                            <div class="row mb-4">
+                                                <div class="col-md-4">
+                                                    <label class="form-label">CURP</label>
+                                                    <input type="text" class="form-control" id="CURP" th:value="${usuario.CURP}">
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <label class="form-label">Fecha de nacimiento</label>
+                                                    <input id="FechaNacimientoUsuario" type="date" class="form-control" th:value="${#dates.format(usuario.FechaNacimiento,'yyyy-MM-dd')}" onkeydown="return false">                                                </div>
+                                                <div class="col-sm-3">
+                                                    <label class="form-label d-block">Sexo</label> 
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="Sexo" value="M" id="sexoM" th:checked="${#strings.trim(usuario.Sexo) == 'M'}">
+                                                        <label class="form-check-label" for="sexoM">Masculino</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="Sexo" value="F" id="sexoF" th:checked="${#strings.trim(usuario.Sexo) == 'F'}">
+                                                        <label class="form-check-label" for="sexoF">Femenino</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-4">
+                                                <div class="col-md-4">
+                                                    <label class="form-label">Usuario</label>
+                                                    <input type="text" class="form-control" id="Username" th:value="${usuario.Username}">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label">Rol</label>
+                                                        <select class="form-select" id="IdRol">
+                                                            <option 
+                                                                th:each="rol : ${roles}" 
+                                                                th:value="${rol.idRol}" 
+                                                                th:text="${rol.NombreRol}"
+                                                                th:selected="${rol.idRol == usuario.roles.idRol}">
+                                                            </option>
+                                                        </select>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label">Email</label>
+                                                    <input type="text" class="form-control" id="Email" th:value="${usuario.Email}" >
+                                                </div>
+                                            </div>    
+                                            <div class="row mb-4">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Telefono</label>
+                                                    <input type="text" class="form-control" id="Telefono" th:value="${usuario.Telefono}" >
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Celular</label>
+                                                    <input type="text" class="form-control" id="Celular" th:value="${usuario.Celular}" >
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                                            <button type="button" class="btn btn-success" id="btnGuardarCambios">Actualizar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-4 shadow-lg rounded bg-white h-100">
+                        <div class="col-md-12">
+                            <table class="table table-bordered align-middle rounded">
+                                <thead class="table-light text-center">
+                                    <tr>
+                                        <th scope="col" style="width: 75%;">Direccion</th>
+                                        <th scope="col" style="width: 25%">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:if="${#lists.isEmpty(usuario.Direcciones)}">
+                                        <td colspan="2" class="text-center text-muted italic">
+                                            Sin direcciones registradas
+                                        </td>
+                                    </tr>
+                                    <tr th:each="direccion : ${usuario.Direcciones}" 
+                                        th:unless="${#lists.isEmpty(usuario.Direcciones)}">
+                                        <td>
+                                            <div class="pb-1">
+                                                <i class="bi bi-geo-alt-fill text-danger"></i>
+                                                <span>
+                                                    <span th:text="${direccion.Calle}"></span>
+                                                    #
+                                                    <span th:text="${direccion.NumeroExterior}"></span>
+
+                                                    <span th:if="${direccion.NumeroInterior != null}">
+                                                        #
+                                                        <span th:text="${direccion.NumeroInterior}"></span>
+                                                    </span>
+
+                                                    , Col.
+                                                    <span th:text="${direccion.Colonia.Nombre}"></span>
+                                                </span>
+                                                <br>
+                                                <small class="text-muted">
+                                                    <span th:text="${direccion.Colonia.Municipio.Nombre}"></span>,
+                                                    <span th:text="${direccion.Colonia.Municipio.Estado.Nombre}"></span>
+                                                </small>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-warning btn-sm"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalDireccion"
+                                                th:attr="
+                                                  data-id=${direccion.idDireccion},
+                                                  data-calle=${direccion.Calle},
+                                                  data-numext=${direccion.NumeroExterior},
+                                                  data-numint=${direccion.NumeroInterior},
+
+                                                  data-idpais=${direccion.Colonia.Municipio.Estado.Pais.idPais},
+                                                  data-idestado=${direccion.Colonia.Municipio.Estado.idEstado},
+                                                  data-idmunicipio=${direccion.Colonia.Municipio.idMunicipio},
+                                                  data-idcolonia=${direccion.Colonia.idColonia}
+                                                ">
+                                                Editar
+                                              </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="modal fade" id="modalDireccion" tabindex="-1">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Editar Dirección</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" id="idDireccion" name="idDireccion">
+                                            <div class="row mb-4">
+                                            <div class="col-md-3">
+                                              <label class="form-label">País</label>
+                                              <select id="ddlPais" class="form-select">
+                                                <option value="0" selected>Selecciona un pais</option>
+                                              </select>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                              <label class="form-label">Estado</label>
+                                              <select id="ddlEstado" class="form-select">
+                                                <option value="0" selected>Selecciona un estado</option>
+                                              </select>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                              <label class="form-label">Municipio</label>
+                                              <select id="ddlMunicipio" class="form-select">
+                                                <option value="0" selected>Selecciona un municipio</option>
+                                              </select>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                              <label class="form-label">Colonia</label>
+                                              <select id="ddlColonia" class="form-select">
+                                                <option value="0" selected>Selecciona una colonia</option>
+                                              </select>
+                                            </div>
+                                          </div>
+
+                                          <div class="row mb-4">
+                                            <div class="col-md-4">
+                                              <label class="form-label">Codigo Postal</label>
+                                              <select id="ddlCodigoPostal" class="form-select">
+                                                <option value="0" selected>Selecciona un codigo postal</option>
+                                              </select>
+                                            </div>
+                                            <div class="row mb-4">
+                                                <div class="col-md-3">
+                                                    <label>Calle</label>
+                                                    <input type="text" id="calle" name="Calle" class="form-control">
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label>Número Exterior</label>
+                                                    <input type="text" id="numExt" name="NumeroExterior" class="form-control">
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label>Número Interior</label>
+                                                    <input type="text" id="numInt" name="NumeroInterior" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-success">Guardar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script th:inline="javascript">
+    let base64Temporal = "";
+
+    $(document).on('change', '#imagenFile', function (e) {
+
+        console.log("Evento change detectado"); 
+
+        let file = e.target.files[0];
+
+        if (!file) return;
+
+        let reader = new FileReader();
+
+        reader.onload = function (event) {
+
+
+            base64Temporal = event.target.result
+                .replace("data:", "")
+                .replace(/^.+,/, "");
+
+            console.log("Base64 cargado");
+
+            $('#ImagenPrincipal').attr('src', event.target.result);
+        };
+
+        reader.readAsDataURL(file);
+    });
+
+
+    $(document).on('click', '#btnActualizarImagen', function () {
+
+        console.log(base64Temporal);
+
+        if (base64Temporal === "") {
+            Swal.fire("Selecciona una imagen primero");
+            return;
+        }
+
+        let idUsuario = [[${usuario.idUsuario}]];
+
+        $.ajax({
+            url: '/usuario/updateImagen',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                idUsuario: idUsuario,
+                imagen: base64Temporal
+            }),
+            success: function () {
+                Swal.fire("Imagen actualizada", "", "success")
+                .then(() => location.reload());
+            },
+            error: function () {
+                Swal.fire("Error AJAX");
+            }
+        });
+    });
+    $(document).on('click', '#btnGuardarCambios', function () {
+
+        let sexoSeleccionado = $("input[name='Sexo']:checked").val();
+
+        let usuario = {
+            idUsuario: [[${usuario.idUsuario}]],
+            username: $("#Username").val(),
+            nombre: $("#Nombre").val(),
+            apellidoPaterno: $("#ApellidoPaterno").val(),
+            apellidoMaterno: $("#ApellidoMaterno").val(),
+            email: $("#Email").val(),
+            sexo: sexoSeleccionado,
+            telefono: $("#Telefono").val(),
+            celular: $("#Celular").val(),
+            curp: $("#CURP").val(),
+            fechaNacimiento: $("#FechaNacimientoUsuario").val(),
+            roles: {
+                idRol: $("#IdRol").val()
+            }
+        };
+
+        $.ajax({
+            url: '/usuario/update',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(usuario),
+            success: function (response) {
+                Swal.fire({
+                    title: "Usuario actualizado",
+                    icon: "success"
+                }).then(() => {
+                    location.reload();
+                });
+            },
+            error: function () {
+                Swal.fire("Error al actualizar");
+            }
+        });
+
+    });
+$(document).ready(function () {
+
+  // llenar select normal
+  function fillSelect($ddl, list, valueProp, textProp, selectedValue, placeholder) {
+    $ddl.empty().append(`<option value="0">${placeholder}</option>`);
+    $.each(list, function (_, item) {
+      $ddl.append(`<option value="${item[valueProp]}">${item[textProp]}</option>`);
+    });
+    if (selectedValue && selectedValue !== "0") $ddl.val(String(selectedValue));
+  }
+
+  // llenar colonias PERO con data-cp (para que CP NO sea undefined)
+  function fillColonias($ddl, list, selectedId, placeholder) {
+    $ddl.empty().append(`<option value="0">${placeholder}</option>`);
+    $.each(list, function (_, c) {
+      // si tu JSON viene con minusculas, usa c.nombre / c.codigoPostal
+      const id = c.idColonia;
+      const nombre = c.Nombre;
+      const cp = c.CodigoPostal;
+
+      $ddl.append(`<option value="${id}" data-cp="${cp}">${nombre}</option>`);
+    });
+    if (selectedId && selectedId !== "0") $ddl.val(String(selectedId));
+  }
+
+  // CUANDO ABRE EL MODAL: carga y selecciona todo
+  $('#modalDireccion').on('show.bs.modal', function (event) {
+    const $btn = $(event.relatedTarget);
+
+    // inputs normales
+    $('#idDireccion').val($btn.data('id'));
+    $('#calle').val($btn.data('calle'));
+    $('#numExt').val($btn.data('numext'));
+    $('#numInt').val($btn.data('numint'));
+
+    const idPais = String($btn.attr('data-idpais') || 0);
+    const idEstado = String($btn.attr('data-idestado') || 0);
+    const idMunicipio = String($btn.attr('data-idmunicipio') || 0);
+    const idColonia = String($btn.attr('data-idcolonia') || 0);
+
+
+    $('#ddlPais').val(idPais);
+
+    fillSelect($('#ddlEstado'), [], 'idEstado', 'Nombre', "0", 'Cargando...');
+    fillSelect($('#ddlMunicipio'), [], 'idMunicipio', 'Nombre', "0", 'Cargando...');
+    $('#ddlColonia').empty().append('<option value="0">Cargando...</option>');
+    $('#ddlCodigoPostal').empty().append('<option value="0">Cargando...</option>');
+
+
+    $.ajax({
+      type: 'GET',
+      url: '/usuario/estados/' + idPais,
+      dataType: 'json',
+      success: function (res) {
+        const estados = res.objects || [];
+        fillSelect($('#ddlEstado'), estados, 'idEstado', 'Nombre', idEstado, 'Selecciona un estado');
+
+        $.ajax({
+          type: 'GET',
+          url: '/usuario/municipios/' + idEstado,
+          dataType: 'json',
+          success: function (res2) {
+            const municipios = res2.objects || [];
+            fillSelect($('#ddlMunicipio'), municipios, 'idMunicipio', 'Nombre', idMunicipio, 'Selecciona un municipio');
+
+
+            $.ajax({
+              type: 'GET',
+              url: '/usuario/colonias/' + idMunicipio,
+              dataType: 'json',
+              success: function (res3) {
+                const colonias = res3.objects || [];
+                fillColonias($('#ddlColonia'), colonias, idColonia, 'Selecciona una colonia');
+
+
+                const cp = $('#ddlColonia option:selected').data('cp');
+
+                $('#ddlCodigoPostal').empty();
+                $('#ddlCodigoPostal').append('<option value="0">Selecciona un codigo postal</option>');
+
+                if (cp !== undefined && cp !== null && cp !== "") {
+                  $('#ddlCodigoPostal').append(`<option value="${cp}" selected>${cp}</option>`);
+                  $('#ddlCodigoPostal').prop('disabled', false);
+                } else {
+                  $('#ddlCodigoPostal').append('<option value="0" selected>CP</option>');
+                  $('#ddlCodigoPostal').prop('disabled', true);
+                }
+              },
+              error: function () {
+                alert("Error al cargar colonias");
+              }
+            });
+          },
+          error: function () {
+            alert("Error al cargar municipios");
+          }
+        });
+      },
+      error: function () {
+        alert("Error al cargar estados");
+      }
+    });
+  });
+
+});
+    </script>
+    
+</html>
