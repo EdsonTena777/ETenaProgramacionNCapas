@@ -241,11 +241,11 @@ public class UsuarioDAOImplementation implements iUsuario {
         return result;
     }
     @Override
-    public Result DELUsuarioSP(Usuario usuario){
+    public Result DELUsuarioSP(int idUsuario){
         Result result = new Result();
         try{
             jdbcTemplate.execute("{CALL UsuarioDELSP(?)}", (CallableStatementCallback<Boolean>) callableStatement -> {
-                callableStatement.setInt(1, usuario.getIdUsuario());
+                callableStatement.setInt(1, idUsuario);
                 callableStatement.execute();
                 return true;
             });

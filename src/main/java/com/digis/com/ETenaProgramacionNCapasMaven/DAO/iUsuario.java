@@ -8,6 +8,6 @@ public interface iUsuario {
     Result GetById(int IdUsuario);
     Result UsuarioDireccionADDSP(Usuario usuario);
     Result UPDUsuarioSP(Usuario usuario);
-    Result DELUsuarioSP(Usuario usuario);
+    Result DELUsuarioSP(int idUsuario);
     Result UPDUsuarioImagenSP(Usuario usuario);
 }

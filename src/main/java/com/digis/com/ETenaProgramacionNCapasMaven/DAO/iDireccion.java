@@ -9,5 +9,5 @@ public interface iDireccion {
     Result GetByUsuarioId(int idUsuario);
     Result UPDDireccionSP(Direccion direccion);
     Result ADDDireccionSP(Direccion direccion);
-    Result DELDireccionSP(Direccion direccion);
+    Result DELDireccionSP(int idDireccion); 
 }

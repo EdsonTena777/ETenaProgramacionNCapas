@@ -49,7 +49,9 @@ public class DireccionDAOImplementation implements iDireccion{
                     direccion.Colonia.Municipio.setNombre(resultSet.getString("NombreMunicipio"));
                     direccion.Colonia.Municipio.Estado.setIdEstado(resultSet.getInt("idEstado"));
                     direccion.Colonia.Municipio.Estado.setNombre(resultSet.getString("NombreEstado"));
+                    direccion.Colonia.Municipio.Estado.Pais.setIdPais(resultSet.getInt("idPais")); 
                     direccion.Colonia.Municipio.Estado.Pais.setNombre(resultSet.getString("NombrePais"));
+                    
                     
                     direcciones.add(direccion);
                     
@@ -112,11 +114,11 @@ public class DireccionDAOImplementation implements iDireccion{
         return result;
     }
     @Override
-    public Result DELDireccionSP(Direccion direccion){
+    public Result DELDireccionSP(int idDireccion){
         Result result = new Result();
         try{
             jdbcTemplate.execute("{CALL DireccionDELSP(?)}", (CallableStatementCallback<Boolean>) callableStatement-> {
-                callableStatement.setInt(1, direccion.getIdDireccion());
+                callableStatement.setInt(1, idDireccion);
                 callableStatement.execute();
                 return true;
             });

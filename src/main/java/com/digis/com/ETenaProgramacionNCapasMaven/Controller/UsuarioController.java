@@ -75,17 +75,21 @@ public class UsuarioController {
         return "GetById";
     }
     @GetMapping("/UsuarioDetail")
-        public String UsuarioDetail(@RequestParam int idUsuario, Model model){
+        public String UsuarioDetail(@RequestParam int idUsuario,Model model){
 
         Result resultDirecciones = direccionDAOImplementation.GetByUsuarioId(idUsuario);
         Result resultUsuario = usuarioDAOImplementation.GetById(idUsuario);
         Result resultRol = rolDAOImplementation.rolGetAll();
+        Result resultPaises = paisDAOImplementation.paisGetAll();
+        Result resultEstados = estadoDAOImplementation.estadoGetAll();
         
         Usuario usuario = (Usuario) resultUsuario.object;
         usuario.Direcciones = (List<Direccion>) (List<?>) resultDirecciones.objects;
 
         model.addAttribute("usuario", usuario);
         model.addAttribute("roles", resultRol.objects);
+        model.addAttribute("paises", resultPaises.objects);
+        model.addAttribute("estados", resultEstados.objects);
 
         return "UsuarioDetail";
     }
@@ -197,9 +201,7 @@ public class UsuarioController {
     @PostMapping("/usuario/updateImagen")
     @ResponseBody
     public boolean UpdateImagen(@RequestBody Usuario usuario){
-
         Result result = usuarioDAOImplementation.UPDUsuarioImagenSP(usuario);
-
         return result.correct;
     }
     @PostMapping("/usuario/update")
@@ -229,5 +231,15 @@ public class UsuarioController {
     @ResponseBody
     public Result GetByIdMunicipio(@PathVariable int idMunicipio){
         return coloniaDAOImplementation.GetByIdMunicipio(idMunicipio);
-    }   
+    }
+    @PostMapping("/usuario/delete")
+    @ResponseBody
+    public Result DelUsaurioId(@RequestParam int idUsuario){
+        return usuarioDAOImplementation.DELUsuarioSP(idUsuario);
+    }
+    @GetMapping("/direccion/delete/{idDireccion}")
+    @ResponseBody
+    public Result DelDireccionId(@PathVariable int idDireccion){
+        return direccionDAOImplementation.DELDireccionSP(idDireccion);   
+    }
 }
