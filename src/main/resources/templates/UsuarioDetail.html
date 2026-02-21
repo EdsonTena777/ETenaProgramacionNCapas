@@ -319,85 +319,6 @@
                                 </div>
                             </div>
                         </div>
-                        <form th:action="@{/tu-ruta}" th:object="${direccion}" method="post">
-                            <div class="col-md-12 text-end mt-3">
-                                <button type="button" class="btn btn-success w-25 bi bi-plus-circle" data-bs-toggle="modal" data-bs-target="#EAgregar">Agregar</button>
-                            </div>
-                            <div class="modal fade" id="EAgregar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Agregar dirección</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body text-start">
-                                            <div class="row mb-4 mt-4">
-                                                <h5 class="text-primary mb-3">Dirección</h5>
-                                                <div class="col-md-2">
-                                                    <label class="form-label">País</label>
-                                                    <select id="ddlPais" class="form-select" th:field="*{Direcciones[0].Colonia.Municipio.Estado.Pais.idPais}">
-                                                        <option value=0 selected>Selecciona un pais</option>
-                                                        <option th:each="pais : ${paises}" 
-                                                                th:value="${pais.idPais}" 
-                                                                th:text="${pais.Nombre}">
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <label class="form-label">Estado</label>
-                                                    <select id="ddlEstado" class="form-select" th:field="*{Direcciones[0].Colonia.Municipio.Estado.idEstado}">
-                                                        <option value=0 selected>Selecciona un estado</option>
-                                                        <option th:each="estado : ${estados}"
-                                                                th:value="${estado.idEstado}"
-                                                                th:text="${estado.Nombre}">
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <label class="form-label">Municipio</label>
-                                                    <select id="ddlMunicipio" class="form-select" th:field="*{Direcciones[0].Colonia.Municipio.idMunicipio}">
-                                                        <option value=0 selected>Selecciona un municipio</option>
-                                                        <option th:each="municipio : ${municipios}"
-                                                                th:value="${municipio.idMunicipio}"
-                                                                th:text="${municipio.Nombre}">
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label class="form-label">Colonia</label>
-                                                    <select id="ddlColonia" class="form-select" th:field="*{Direcciones[0].Colonia.idColonia}">
-                                                        <option value=0 selected>Selecciona una colonia</option>
-                                                        <option th:each="colonia : ${colonias}"
-                                                                th:value="${colonia.idColonia}"
-                                                                th:text="${colonia.Nombre}">
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-2">
-                                                    <label for="NumeroExteriorUsuario" class="form-label">No. Exterior</label>
-                                                    <input id="NumeroExteriorUsuario" type="text" class="form-control" th:field="*{direcciones[0].numeroExterior}">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <label for="NumeroInteriorUsuario" class="form-label">No. Interior</label>
-                                                    <input id="NumeroInteriorUsuario" type="text" class="form-control" th:field="*{direcciones[0].numeroInterior}">
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label for="CalleUsuario" class="form-label">Calle</label>
-                                                    <input id="CalleUsuario" type="text" class="form-control" th:field="*{direcciones[0].calle}">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-                                            <button type="submit" class="btn btn-success">Guardar Dirección</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-  
                         </div>
                     </div>
                 </div>
@@ -540,7 +461,7 @@
           const idMunicipio = String($btn.attr('data-idmunicipio') || 0);
           const idColonia = String($btn.attr('data-idcolonia') || 0);
           console.log("Valores recuperados:", {idPais, idEstado});
-
+          
           const $ddlPais = $('#ddlPais');
           setTimeout(function() {
               $ddlPais.val(idPais).trigger('change'); 

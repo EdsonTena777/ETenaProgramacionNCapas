@@ -7,7 +7,7 @@ public class Rol {
     @JsonProperty("idRol")
     private int idRol;
     private String NombreRol;
-
+    
     public int getIdRol() {
         return idRol;
     }

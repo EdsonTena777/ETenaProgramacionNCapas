@@ -93,8 +93,7 @@ public class UsuarioController {
 
         return "UsuarioDetail";
     }
-
-    
+        
     @GetMapping("/form")
     public String form(Model model){
         Usuario usuario = new Usuario();
@@ -113,8 +112,7 @@ public class UsuarioController {
         model.addAttribute("usuario", usuario);
         model.addAttribute("paises", resultPaises.objects);
         return "Formulario";
-    }
-    
+    }   
     @PostMapping("/form")
     public String form(@Valid @ModelAttribute("usuario") Usuario usuario, BindingResult bindingResult, @RequestParam("imagenFile") MultipartFile imagenFile, Model model){
         if(bindingResult.hasErrors()){

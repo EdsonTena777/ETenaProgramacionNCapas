@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.*; 
-import java.io.StringReader;
 
 @Repository 
 public class UsuarioDAOImplementation implements iUsuario {

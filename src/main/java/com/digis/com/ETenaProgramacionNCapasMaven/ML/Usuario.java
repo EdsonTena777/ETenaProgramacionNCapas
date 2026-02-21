@@ -3,7 +3,6 @@ package com.digis.com.ETenaProgramacionNCapasMaven.ML;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -37,7 +36,7 @@ public class Usuario {
     @JsonProperty("email")
     private String Email;
     @NotBlank(message = "La contraseña es obligatoria")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$*!%?&])[^\\s]{8,15   }$", message = "Debe tener entre 8 y 15 caracteres, una mayúscula, una minúscula, un número, un carácter especial y sin espacios")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$*!%?&])[^\\s]{8,15}$", message = "Debe tener entre 8 y 15 caracteres, una mayúscula, una minúscula, un número, un carácter especial y sin espacios")
     private String Password;
     @NotNull(message = "La fecha de nacimiento es obligatoria")
     @JsonProperty("fechaNacimiento")

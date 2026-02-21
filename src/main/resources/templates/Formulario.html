@@ -257,7 +257,6 @@
 
         var idEstado = $(this).val();
 
-        // Limpiar municipios y colonias
         $("#ddlMunicipio").empty().append('<option value="0">Selecciona un municipio</option>');
         $("#ddlColonia").empty().append('<option value="0">Selecciona una colonia</option>');
 
@@ -324,7 +323,6 @@
     $("#ddlCodigoPostal").empty();
 
     if(idColonia != "0" && cp != undefined) {
-        
         $("#ddlCodigoPostal").append('<option value="' + cp + '">' + cp + '</option>');
         $("#ddlCodigoPostal").prop("disabled", false);
     } else {
