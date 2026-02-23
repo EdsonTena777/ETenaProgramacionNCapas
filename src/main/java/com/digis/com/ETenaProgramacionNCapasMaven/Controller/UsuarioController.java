@@ -77,14 +77,14 @@ public class UsuarioController {
     @GetMapping("/UsuarioDetail")
         public String UsuarioDetail(@RequestParam int idUsuario,Model model){
 
-        Result resultDirecciones = direccionDAOImplementation.GetByUsuarioId(idUsuario);
+        
         Result resultUsuario = usuarioDAOImplementation.GetById(idUsuario);
         Result resultRol = rolDAOImplementation.rolGetAll();
         Result resultPaises = paisDAOImplementation.paisGetAll();
         Result resultEstados = estadoDAOImplementation.estadoGetAll();
         
         Usuario usuario = (Usuario) resultUsuario.object;
-        usuario.Direcciones = (List<Direccion>) (List<?>) resultDirecciones.objects;
+        
 
         model.addAttribute("usuario", usuario);
         model.addAttribute("roles", resultRol.objects);
@@ -207,11 +207,6 @@ public class UsuarioController {
     public Result updateUsuario(@RequestBody Usuario usuario){
         return usuarioDAOImplementation.UPDUsuarioSP(usuario);
     }
-    @PostMapping("/usuario/updateDireccion")
-    @ResponseBody
-    public Result updateDireccion(@RequestBody Direccion direccion){
-        return direccionDAOImplementation.UPDDireccionSP(direccion);
-    } 
     
     @GetMapping("/usuario/estados/{idPais}")
     @ResponseBody

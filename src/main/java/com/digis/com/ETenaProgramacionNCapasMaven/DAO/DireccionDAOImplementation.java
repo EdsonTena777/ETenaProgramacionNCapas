@@ -7,6 +7,7 @@ import com.digis.com.ETenaProgramacionNCapasMaven.ML.Estado;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Municipio;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Pais;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Result;
+import com.digis.com.ETenaProgramacionNCapasMaven.ML.Usuario;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,67 +23,72 @@ public class DireccionDAOImplementation implements iDireccion{
     private JdbcTemplate jdbcTemplate;
     
     @Override
-    public Result GetByUsuarioId(int idUsuario){
+    public Result GetById(int IdDireccion){
         Result result = new Result();
         try{
-            jdbcTemplate.execute("{CALL DireccionGetByUsuarioIdSP(?,?)}", (CallableStatementCallback<Boolean>) callableStatement -> {
-                callableStatement.setInt(1, idUsuario);
+            jdbcTemplate.execute("{CALL DireccionGetByIdSP(?,?)}", (CallableStatementCallback<Boolean>) callableStatement ->{
+                callableStatement.setInt(1, IdDireccion);
                 callableStatement.registerOutParameter(2, java.sql.Types.REF_CURSOR);
                 callableStatement.execute();
+                
                 ResultSet resultSet = (ResultSet) callableStatement.getObject(2);
-                List<Direccion> direcciones = new ArrayList<>();
-                while(resultSet.next()){
+                
+                if(resultSet.next()){
                     Direccion direccion = new Direccion();
                     direccion.Colonia = new Colonia();
                     direccion.Colonia.Municipio = new Municipio();
                     direccion.Colonia.Municipio.Estado = new Estado();
                     direccion.Colonia.Municipio.Estado.Pais = new Pais();
-
-                    direccion.setIdDireccion(resultSet.getInt("idDireccion"));
-                    direccion.setCalle(resultSet.getString("Calle"));
-                    direccion.setNumeroInterior(resultSet.getString("NumeroInterior"));
-                    direccion.setNumeroExterior(resultSet.getString("NumeroExterior"));
-                    direccion.Colonia.setidColonia(resultSet.getInt("idColonia"));
-                    direccion.Colonia.setNombre(resultSet.getString("NombreColonia"));
-                    direccion.Colonia.setCodigoPostal(resultSet.getString("CodigoPostal"));
-                    direccion.Colonia.Municipio.setIdMunicipio(resultSet.getInt("idMunicipio"));
-                    direccion.Colonia.Municipio.setNombre(resultSet.getString("NombreMunicipio"));
-                    direccion.Colonia.Municipio.Estado.setIdEstado(resultSet.getInt("idEstado"));
-                    direccion.Colonia.Municipio.Estado.setNombre(resultSet.getString("NombreEstado"));
-                    direccion.Colonia.Municipio.Estado.Pais.setIdPais(resultSet.getInt("idPais")); 
-                    direccion.Colonia.Municipio.Estado.Pais.setNombre(resultSet.getString("NombrePais"));
+                    direccion.Usuario = new Usuario();
                     
+                    direccion.setIdDireccion(resultSet.getInt("IDDIRECCION"));
+                    direccion.setCalle(resultSet.getString("CALLE"));
+                    direccion.setNumeroInterior(resultSet.getString("NUMEROINTERIOR"));
+                    direccion.setNumeroExterior(resultSet.getString("NUMEROEXTERIOR"));
                     
-                    direcciones.add(direccion);
+                    direccion.Colonia.setIdColonia(resultSet.getInt("IDCOLONIA"));
+                    direccion.Colonia.setNombre(resultSet.getString("NOMBRECOLONIA"));
+                    direccion.Colonia.setCodigoPostal(resultSet.getString("CODIGOPOSTAL"));
+                    
+                    direccion.Colonia.Municipio.setIdMunicipio(resultSet.getInt("IDMUNICIPIO"));
+                    direccion.Colonia.Municipio.setNombre(resultSet.getString("NOMBREMUNICIPIO"));
+                    
+                    direccion.Colonia.Municipio.Estado.setIdEstado(resultSet.getInt("IDESTADO"));
+                    direccion.Colonia.Municipio.Estado.setNombre(resultSet.getString("NOMBREESTADO"));
+                    
+                    direccion.Colonia.Municipio.Estado.Pais.setIdPais(resultSet.getInt("IDPAIS"));
+                    direccion.Colonia.Municipio.Estado.Pais.setNombre(resultSet.getString("NOMBREPAIS"));
+                    
+                    direccion.Usuario.setIdUsuario(resultSet.getInt("IDUSUARIO"));
+                    
+                    result.object = direccion;
+                    result.correct = true;
                     
                 }
-                result.objects = new ArrayList<Object>(direcciones);
-                result.correct = true;
                 return true;
             });
             
-        }catch (Exception ex){
+        }catch(Exception ex){
             result.correct = false;
             result.errorMessage = ex.getLocalizedMessage();
             result.ex = ex;
-        } 
+        }
         return result;
     }
     @Override
-    public Result UPDDireccionSP(Direccion direccion){
+    public Result Update (Direccion direccion){
         Result result = new Result();
         try{
-            jdbcTemplate.execute("{CALL DireccionUPDSP(?,?,?,?,?)}", (CallableStatementCallback<Boolean>) callableStatement-> {
+            jdbcTemplate.execute("{CALL DireccionUpdateSP(?,?,?,?,?)}", (CallableStatementCallback<Boolean>) callableStatement -> {
                 callableStatement.setInt(1, direccion.getIdDireccion());
                 callableStatement.setString(2, direccion.getCalle());
-                callableStatement.setString(3, direccion.getNumeroExterior());
-                callableStatement.setString(4, direccion.getNumeroInterior());
-                callableStatement.setInt(5, direccion.getColonia().getidColonia());
+                callableStatement.setString(3, direccion.getNumeroInterior());
+                callableStatement.setString(4, direccion.getNumeroExterior());
+                callableStatement.setInt(5, direccion.Colonia.getIdColonia());
                 callableStatement.execute();
-                
                 return true;
             });
-          result.correct = true;          
+            result.correct = true;
         
         }catch(Exception ex){
             result.correct = false;

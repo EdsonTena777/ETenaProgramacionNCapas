@@ -231,94 +231,84 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="btn btn-danger bi bi-trash w-25" th:onclick="'ConfirmarDelete(' + ${direccion.idDireccion} + ')'" style="cursor: pointer;"></div>
-                                            <button class="btn btn-warning bi bi-pencil-square"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#modalDireccion"
-                                                th:attr="
-                                                    data-id=${direccion.idDireccion},
-                                                    data-calle=${direccion.Calle},
-                                                    data-numext=${direccion.NumeroExterior},
-                                                    data-numint=${direccion.NumeroInterior},
-                                                    data-idpais=${direccion.Colonia?.Municipio?.Estado?.Pais?.idPais},
-                                                    data-idestado=${direccion.Colonia?.Municipio?.Estado?.idEstado},
-                                                    data-idmunicipio=${direccion.Colonia?.Municipio?.idMunicipio},
-                                                    data-idcolonia=${direccion.Colonia?.idColonia}
-                                                  ">  
-                                              </button>
+                                           
+                                            <button type="button" class="btn btn-warning ms-auto" id="btnEditarDireccion">
+                                            Editar
+                                          </button>                      
+
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
-                            <div class="modal fade" id="modalDireccion" tabindex="-1">
+                                    <input type="hidden" id="hdnIdDireccion" th:value="${direccion.idDireccion}">   
+                            <div class="modal fade" id="modalEditarDireccion" tabindex="-1">
                                 <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Editar Dirección</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <input type="hidden" id="idDireccion" name="idDireccion">
-                                            <div class="row mb-4">
-                                            <div class="col-md-3">
-                                              <label class="form-label">País</label>
-                                              <select id="ddlPais" class="form-select">
-                                                    <option value="0">Selecciona un país</option>
-                                                    <option th:each="pais : ${paises}" 
-                                                            th:value="${pais.idPais}" 
-                                                            th:text="${pais.Nombre}">
-                                                    </option>
-                                                </select>
-                                            </div>
+                                  <div class="modal-content">
 
-                                            <div class="col-md-3">
-                                              <label class="form-label">Estado</label>
-                                              <select id="ddlEstado" class="form-select">
-                                                <option value="0" selected>Selecciona un estado</option>
-                                              </select>
-                                            </div>
-
-                                            <div class="col-md-3">
-                                              <label class="form-label">Municipio</label>
-                                              <select id="ddlMunicipio" class="form-select">
-                                                <option value="0" selected>Selecciona un municipio</option>
-                                              </select>
-                                            </div>
-
-                                            <div class="col-md-3">
-                                              <label class="form-label">Colonia</label>
-                                              <select id="ddlColonia" class="form-select">
-                                                <option value="0" selected>Selecciona una colonia</option>
-                                              </select>
-                                            </div>
-                                          </div>
-
-                                            <div class="row mb-4">
-                                                <div class="col-md-3">
-                                                    <label class="form-label">Codigo Postal</label>
-                                                    <select id="ddlCodigoPostal" class="form-select">
-                                                      <option value="0" selected>Selecciona un codigo postal</option>
-                                                    </select>
-                                                  </div>
-                                                <div class="col-md-3">
-                                                    <label>Calle</label>
-                                                    <input type="text" id="calle" name="Calle" class="form-control">
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <label>Número Exterior</label>
-                                                    <input type="text" id="numExt" name="NumeroExterior" class="form-control">
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <label>Número Interior</label>
-                                                    <input type="text" id="numInt" name="NumeroInterior" class="form-control">
-                                                </div>
-                                            </div>
-                                        <div class="modal-footer">
-                                            <button type="submit" class="btn btn-success">Guardar</button>
-                                        </div>
+                                    <div class="modal-header">
+                                      <h5 class="modal-title">Editar dirección</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
+
+                                    <div class="modal-body">
+                                      <!-- Hidden -->
+                                      <input type="hidden" id="IdDireccion">
+                                      <input type="hidden" id="IdUsuario">
+
+                                      <div class="row g-3">
+
+                                        <div class="col-md-6">
+                                          <label class="form-label">Calle</label>
+                                          <input class="form-control" id="Calle">
+                                        </div>
+
+                                        <div class="col-md-3">
+                                          <label class="form-label">No. Exterior</label>
+                                          <input class="form-control" id="NumeroExterior">
+                                        </div>
+
+                                        <div class="col-md-3">
+                                          <label class="form-label">No. Interior</label>
+                                          <input class="form-control" id="NumeroInterior">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                          <label class="form-label">País</label>
+                                          <select class="form-select" id="ddlPais"></select>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                          <label class="form-label">Estado</label>
+                                          <select class="form-select" id="ddlEstado"></select>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                          <label class="form-label">Municipio</label>
+                                          <select class="form-select" id="ddlMunicipio"></select>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                          <label class="form-label">Colonia</label>
+                                          <select class="form-select" id="ddlColonia"></select>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                          <label class="form-label">Código Postal</label>
+                                          <input class="form-control" id="CodigoPostal" readonly>
+                                        </div>
+
+                                      </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                      <!-- Aún no hacemos update -->
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                      <button type="button" class="btn btn-warning" id="btnGuardarDireccion">Guardar</button>
+                                    </div>
+
+                                  </div>
                                 </div>
-                            </div>
-                        </div>
+                              </div>
                         </div>
                     </div>
                 </div>
@@ -425,115 +415,7 @@
         });
 
     });
-    $(document).ready(function () {
-
-
-    function fillSelect($ddl, list, valueProp, textProp, selectedValue, placeholder) {
-        $ddl.empty().append(`<option value="0">${placeholder}</option>`);
-        $.each(list, function (_, item) {
-          $ddl.append(`<option value="${item[valueProp]}">${item[textProp]}</option>`);
-        });
-        if (selectedValue && selectedValue !== "0") $ddl.val(String(selectedValue));
-    }
-
-      function fillColonias($ddl, list, selectedId, placeholder) {
-        $ddl.empty().append(`<option value="0">${placeholder}</option>`);
-        $.each(list, function (_, c) {
-          const id = c.idColonia;
-          const nombre = c.Nombre;
-          const cp = c.CodigoPostal;
-
-          $ddl.append(`<option value="${id}" data-cp="${cp}">${nombre}</option>`);
-        });
-        if (selectedId && selectedId !== "0") $ddl.val(String(selectedId));
-      }
-
-        $('#modalDireccion').on('show.bs.modal', function (event) {
-          const $btn = $(event.relatedTarget);
-
-          $('#idDireccion').val($btn.data('id'));
-          $('#calle').val($btn.data('calle'));
-          $('#numExt').val($btn.data('numext'));
-          $('#numInt').val($btn.data('numint'));
-
-          const idPais = $btn.attr('data-idpais');
-          const idEstado = $btn.attr('data-idestado');
-          const idMunicipio = String($btn.attr('data-idmunicipio') || 0);
-          const idColonia = String($btn.attr('data-idcolonia') || 0);
-          console.log("Valores recuperados:", {idPais, idEstado});
-          
-          const $ddlPais = $('#ddlPais');
-          setTimeout(function() {
-              $ddlPais.val(idPais).trigger('change'); 
-
-              if($ddlPais.val() === null) {
-                  $ddlPais.find('option[value="' + idPais + '"]').prop('selected', true);
-              }
-          }, 50);     
-          $('#ddlPais').val(idPais);
-
-          fillSelect($('#ddlEstado'), [], 'idEstado', 'Nombre', "0", 'Cargando...');
-          fillSelect($('#ddlMunicipio'), [], 'idMunicipio', 'Nombre', "0", 'Cargando...');
-          $('#ddlColonia').empty().append('<option value="0">Cargando...</option>');
-          $('#ddlCodigoPostal').empty().append('<option value="0">Cargando...</option>');
-
-
-          $.ajax({
-            type: 'GET',
-            url: '/usuario/estados/' + idPais,
-            dataType: 'json',
-            success: function (res) {
-              const estados = res.objects || [];
-              fillSelect($('#ddlEstado'), estados, 'idEstado', 'Nombre', idEstado, 'Selecciona un estado');
-
-              $.ajax({
-                type: 'GET',
-                url: '/usuario/municipios/' + idEstado,
-                dataType: 'json',
-                success: function (res2) {
-                  const municipios = res2.objects || [];
-                  fillSelect($('#ddlMunicipio'), municipios, 'idMunicipio', 'Nombre', idMunicipio, 'Selecciona un municipio');
-
-
-                  $.ajax({
-                    type: 'GET',
-                    url: '/usuario/colonias/' + idMunicipio,
-                    dataType: 'json',
-                    success: function (res3) {
-                      const colonias = res3.objects || [];
-                      fillColonias($('#ddlColonia'), colonias, idColonia, 'Selecciona una colonia');
-
-
-                      const cp = $('#ddlColonia option:selected').data('cp');
-
-                      $('#ddlCodigoPostal').empty();
-                      $('#ddlCodigoPostal').append('<option value="0">Selecciona un codigo postal</option>');
-
-                      if (cp !== undefined && cp !== null && cp !== "") {
-                        $('#ddlCodigoPostal').append(`<option value="${cp}" selected>${cp}</option>`);
-                        $('#ddlCodigoPostal').prop('disabled', false);
-                      } else {
-                        $('#ddlCodigoPostal').append('<option value="0" selected>CP</option>');
-                        $('#ddlCodigoPostal').prop('disabled', true);
-                      }
-                    },
-                    error: function () {
-                      alert("Error al cargar colonias");
-                    }
-                  });
-                },
-                error: function () {
-                  alert("Error al cargar municipios");
-                }
-              });
-            },
-            error: function () {
-              alert("Error al cargar estados");
-            }
-          });
-        });
-
-    });
+    
     function ConfirmarDelete(idDireccion) {
             Swal.fire({
                 title: "¿Estás seguro?",
@@ -573,6 +455,211 @@
                 }
             });
         }
+ $(document).ready(function () {
+  console.log("Script cargado OK");
+  console.log("jQuery version:", $.fn.jquery);
+
+  function fillSelect($ddl, items, valueKey, textKey) {
+    $ddl.empty().append('<option value="">Seleccione</option>');
+    $.each(items, function (_, it) {
+      $ddl.append('<option value="' + it[valueKey] + '">' + it[textKey] + '</option>');
+    });
+  }
+
+  function fillColonias($ddl, items) {
+    $ddl.empty().append('<option value="">Seleccione</option>');
+    $.each(items, function (_, c) {
+      $ddl.append(
+        '<option value="' + c.idColonia + '" data-cp="' + (c.codigoPostal || '') + '">' + c.Nombre + "</option>"
+      );
+    });
+  }
+
+  function cargarPaises(selectedIdPais, done) {
+    $.ajax({
+      url: "/catalogo/pais/getall",
+      type: "GET",
+      dataType: "json"
+    }).done(function (res) {
+      console.log("pais/getall", res);
+      if (!res.correct) { alert(res.errorMessage || "Error países"); return; }
+      fillSelect($("#ddlPais"), res.objects, "idPais", "Nombre");
+      if (selectedIdPais) $("#ddlPais").val(selectedIdPais);
+      if (done) done();
+    }).fail(function (xhr) {
+      console.error("Error pais/getall", xhr.status, xhr.responseText);
+      alert("No respondió /catalogo/pais/getall");
+    });
+  }
+
+  function cargarEstados(idPais, selectedIdEstado, done) {
+    $("#ddlEstado").empty().append('<option value="">Seleccione</option>');
+    $("#ddlMunicipio").empty().append('<option value="">Seleccione</option>');
+    $("#ddlColonia").empty().append('<option value="">Seleccione</option>');
+    $("#CodigoPostal").val("");
+
+    if (!idPais) return;
+
+    $.ajax({
+      url: "/catalogo/estado/getbyidpais",
+      type: "GET",
+      dataType: "json",
+      data: { idPais: idPais }
+    }).done(function (res) {
+      console.log("estado/getbyidpais", res);
+      if (!res.correct) { alert(res.errorMessage || "Error estados"); return; }
+      fillSelect($("#ddlEstado"), res.objects, "idEstado", "Nombre");
+      if (selectedIdEstado) $("#ddlEstado").val(selectedIdEstado);
+      if (done) done();
+    }).fail(function (xhr) {
+      console.error("Error estado/getbyidpais", xhr.status, xhr.responseText);
+      alert("No respondió /catalogo/estado/getbyidpais");
+    });
+  }
+
+  function cargarMunicipios(idEstado, selectedIdMunicipio, done) {
+    $("#ddlMunicipio").empty().append('<option value="">Seleccione</option>');
+    $("#ddlColonia").empty().append('<option value="">Seleccione</option>');
+    $("#CodigoPostal").val("");
+
+    if (!idEstado) return;
+
+    $.ajax({
+      url: "/catalogo/municipio/getbyidestado",
+      type: "GET",
+      dataType: "json",
+      data: { idEstado: idEstado }
+    }).done(function (res) {
+      console.log("municipio/getbyidestado", res);
+      if (!res.correct) { alert(res.errorMessage || "Error municipios"); return; }
+      fillSelect($("#ddlMunicipio"), res.objects, "idMunicipio", "Nombre");
+      if (selectedIdMunicipio) $("#ddlMunicipio").val(selectedIdMunicipio);
+      if (done) done();
+    }).fail(function (xhr) {
+      console.error(" Error municipio/getbyidestado", xhr.status, xhr.responseText);
+      alert("No respondió /catalogo/municipio/getbyidestado");
+    });
+  }
+
+  function cargarColonias(idMunicipio, selectedIdColonia, done) {
+    $("#ddlColonia").empty().append('<option value="">Seleccione</option>');
+    $("#CodigoPostal").val("");
+
+    if (!idMunicipio) return;
+
+    $.ajax({
+      url: "/catalogo/colonia/getbyidmunicipio",
+      type: "GET",
+      dataType: "json",
+      data: { idMunicipio: idMunicipio }
+    }).done(function (res) {
+      console.log("colonia/getbyidmunicipio", res);
+      if (!res.correct) { alert(res.errorMessage || "Error colonias"); return; }
+      fillColonias($("#ddlColonia"), res.objects);
+
+      if (selectedIdColonia) {
+        $("#ddlColonia").val(selectedIdColonia);
+        $("#CodigoPostal").val($("#ddlColonia option:selected").data("cp") || "");
+      }
+      if (done) done();
+    }).fail(function (xhr) {
+      console.error("❌ Error colonia/getbyidmunicipio", xhr.status, xhr.responseText);
+      alert("No respondió /catalogo/colonia/getbyidmunicipio");
+    });
+  }
+
+  // Delegación: funciona aunque el botón se pinte después
+  $(document).on("click", "#btnEditarDireccion", function () {
+    console.log(" Click Editar detectado");
+
+    var idDireccion = $("#hdnIdDireccion").val();
+    console.log(" idDireccion:", idDireccion);
+
+    $.ajax({
+      url: "/direccion/getbyid",
+      type: "GET",
+      dataType: "json",
+      data: { idDireccion: idDireccion }
+    }).done(function (res) {
+      console.log(" direccion/getbyid", res);
+
+      if (!res.correct) { alert(res.errorMessage || "No se pudo cargar la dirección"); return; }
+
+      var d = res.object;
+
+      $("#IdDireccion").val(d.idDireccion);
+      $("#Calle").val(d.calle);
+      $("#NumeroExterior").val(d.numeroExterior);
+      $("#NumeroInterior").val(d.numeroInterior);
+
+      var col = d.Colonia || d.colonia;
+      var mun = col ? (col.Municipio || col.municipio) : null;
+      var est = mun ? (mun.Estado || mun.estado) : null;
+      var pai = est ? (est.Pais || est.pais) : null;
+
+      var idPais = pai ? pai.idPais : "";
+      var idEstado = est ? est.idEstado : "";
+      var idMunicipio = mun ? mun.idMunicipio : "";
+      var idColonia = col ? col.idColonia : "";
+
+      cargarPaises(idPais, function () {
+        cargarEstados(idPais, idEstado, function () {
+          cargarMunicipios(idEstado, idMunicipio, function () {
+            cargarColonias(idMunicipio, idColonia, function () {
+              console.log("✅ Abriendo modal");
+              var modal = new bootstrap.Modal(document.getElementById("modalEditarDireccion"));
+              modal.show();
+            });
+          });
+        });
+      });
+
+    }).fail(function (xhr) {
+      console.error("❌ Error direccion/getbyid", xhr.status, xhr.responseText);
+      alert("No respondió /direccion/getbyid?idDireccion=" + idDireccion);
+    });
+  });
+
+  // Cascada manual
+  $(document).on("change", "#ddlPais", function () { cargarEstados($(this).val(), null); });
+  $(document).on("change", "#ddlEstado", function () { cargarMunicipios($(this).val(), null); });
+  $(document).on("change", "#ddlMunicipio", function () { cargarColonias($(this).val(), null); });
+  $(document).on("change", "#ddlColonia", function () {
+    $("#CodigoPostal").val($("#ddlColonia option:selected").data("cp") || "");
+  });
+
+});
+$(document).on("click", "#btnGuardarDireccion", function () {
+
+  var payload = {
+    IdDireccion: parseInt($("#IdDireccion").val(), 10),
+    Calle: $("#Calle").val(),
+    NumeroExterior: $("#NumeroExterior").val(),
+    NumeroInterior: $("#NumeroInterior").val(),
+    Colonia: { IdColonia: parseInt($("#ddlColonia").val(), 10) }
+  };
+
+  console.log("PAYLOAD JSON:", JSON.stringify(payload));
+
+  $.ajax({
+    url: "/direccion/update",
+    type: "POST",
+    contentType: "application/json",
+    dataType: "json",
+    data: JSON.stringify(payload)
+  }).done(function(res){
+    console.log("UPDATE RES:", res);
+    if(!res.correct){ alert(res.errorMessage || "No se pudo actualizar"); return; }
+    bootstrap.Modal.getInstance(document.getElementById("modalEditarDireccion")).hide();
+    alert("Actualizado ✅");
+    location.reload();
+  }).fail(function(xhr){
+    console.error(xhr.status, xhr.responseText);
+    alert("Error al llamar /direccion/update");
+  });
+
+});
+      
     </script>
     
 </html>

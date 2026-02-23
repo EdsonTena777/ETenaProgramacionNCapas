@@ -8,42 +8,48 @@ public class Direccion {
     private String NumeroExterior;
     public Colonia Colonia;
     public Usuario Usuario;
-    
-    public Usuario getUsuario() {
-        return Usuario;
-    }
 
-    public void setUsuario(Usuario Usuario) {
+    public Direccion(int idDireccion, String Calle, String NumeroInterior, String NumeroExterior, Colonia Colonia, Usuario Usuario) {
+        this.idDireccion = idDireccion;
+        this.Calle = Calle;
+        this.NumeroInterior = NumeroInterior;
+        this.NumeroExterior = NumeroExterior;
+        this.Colonia = Colonia;
         this.Usuario = Usuario;
     }
-    public int getIdDireccion(){
+
+    public Direccion() {
+    }
+    
+    public int getIdDireccion() {
         return idDireccion;
     }
-    public void setIdDireccion(int idDireccion){
+
+    public void setIdDireccion(int idDireccion) {
         this.idDireccion = idDireccion;
     }
-    
-    public String getCalle(){
+
+    public String getCalle() {
         return Calle;
     }
-    
-    public void setCalle(String Calle){
+
+    public void setCalle(String Calle) {
         this.Calle = Calle;
     }
-    
-    public String getNumeroInterior(){
+
+    public String getNumeroInterior() {
         return NumeroInterior;
     }
-    
-    public void setNumeroInterior(String NumeroInterior){
+
+    public void setNumeroInterior(String NumeroInterior) {
         this.NumeroInterior = NumeroInterior;
     }
-    
-    public String getNumeroExterior(){
+
+    public String getNumeroExterior() {
         return NumeroExterior;
     }
-    
-    public void setNumeroExterior(String NumeroExterior){
+
+    public void setNumeroExterior(String NumeroExterior) {
         this.NumeroExterior = NumeroExterior;
     }
 
@@ -54,4 +60,15 @@ public class Direccion {
     public void setColonia(Colonia Colonia) {
         this.Colonia = Colonia;
     }
+
+    public Usuario getUsuario() {
+        return Usuario;
+    }
+
+    public void setUsuario(Usuario Usuario) {
+        this.Usuario = Usuario;
+    }
+    
+    
+    
 }
