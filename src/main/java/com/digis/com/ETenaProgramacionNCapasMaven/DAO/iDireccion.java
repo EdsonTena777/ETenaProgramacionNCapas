@@ -8,6 +8,6 @@ public interface iDireccion {
     
     Result GetById(int IdDireccion);
     Result Update (Direccion direccion);
-    Result ADDDireccionSP(Direccion direccion);
+    Result Add(Direccion direccion);
     Result DELDireccionSP(int idDireccion); 
 }

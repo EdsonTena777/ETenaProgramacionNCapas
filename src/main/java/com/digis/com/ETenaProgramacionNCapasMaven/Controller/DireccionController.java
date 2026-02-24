@@ -46,4 +46,10 @@ public class DireccionController {
     public Result update(@RequestBody Direccion direccion) {
         return direccionDAOImplementation.Update(direccion);
     }
+    
+    @PostMapping("/add")
+    @ResponseBody
+    public Result add(@RequestBody Direccion direccion){
+        return direccionDAOImplementation.Add(direccion);
+    }
 }

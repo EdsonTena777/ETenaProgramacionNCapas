@@ -9,6 +9,9 @@ public class Direccion {
     public Colonia Colonia;
     public Usuario Usuario;
 
+    public Direccion() {
+    }
+
     public Direccion(int idDireccion, String Calle, String NumeroInterior, String NumeroExterior, Colonia Colonia, Usuario Usuario) {
         this.idDireccion = idDireccion;
         this.Calle = Calle;
@@ -18,9 +21,6 @@ public class Direccion {
         this.Usuario = Usuario;
     }
 
-    public Direccion() {
-    }
-    
     public int getIdDireccion() {
         return idDireccion;
     }
@@ -68,6 +68,7 @@ public class Direccion {
     public void setUsuario(Usuario Usuario) {
         this.Usuario = Usuario;
     }
+
     
     
     

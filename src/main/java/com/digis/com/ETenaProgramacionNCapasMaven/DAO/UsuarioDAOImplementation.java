@@ -44,7 +44,7 @@ public class UsuarioDAOImplementation implements iUsuario {
                         direccion.setCalle(resultSet.getString("Calle"));
                         direccion.setNumeroInterior(resultSet.getString("NumeroInterior"));
                         direccion.setNumeroExterior(resultSet.getString("NumeroExterior"));
-                        direccion.Colonia.setidColonia(resultSet.getInt("idColonia"));
+                        direccion.Colonia.setIdColonia(resultSet.getInt("idColonia"));
                         direccion.Colonia.setNombre(resultSet.getString("NombreColonia"));
                         direccion.Colonia.setCodigoPostal(resultSet.getString("CodigoPostal"));
                         direccion.Colonia.Municipio.setIdMunicipio(resultSet.getInt("idmunicipio"));
@@ -84,7 +84,7 @@ public class UsuarioDAOImplementation implements iUsuario {
                             direccion.setCalle(resultSet.getString("Calle"));
                             direccion.setNumeroInterior(resultSet.getString("NumeroInterior"));
                             direccion.setNumeroExterior(resultSet.getString("NumeroExterior"));
-                            direccion.Colonia.setidColonia(resultSet.getInt("idColonia"));
+                            direccion.Colonia.setIdColonia(resultSet.getInt("idColonia"));
                             direccion.Colonia.setNombre(resultSet.getString("NombreColonia"));
                             direccion.Colonia.setCodigoPostal(resultSet.getString("CodigoPostal"));
                             direccion.Colonia.Municipio.setIdMunicipio(resultSet.getInt("idmunicipio"));
@@ -150,7 +150,7 @@ public class UsuarioDAOImplementation implements iUsuario {
                     direccion.setCalle(resultSet.getString("Calle"));
                     direccion.setNumeroInterior(resultSet.getString("NumeroInterior"));
                     direccion.setNumeroExterior(resultSet.getString("NumeroExterior"));
-                    direccion.Colonia.setidColonia(resultSet.getInt("idColonia"));
+                    direccion.Colonia.setIdColonia(resultSet.getInt("idColonia"));
                     direccion.Colonia.setNombre(resultSet.getString("NombreColonia"));
                     direccion.Colonia.setCodigoPostal(resultSet.getString("CodigoPostal"));
                     direccion.Colonia.Municipio.setIdMunicipio(resultSet.getInt("idMunicipio"));
@@ -196,7 +196,7 @@ public class UsuarioDAOImplementation implements iUsuario {
             callableStatement.setString(14,direccion.getCalle());
             callableStatement.setString(15, direccion.getNumeroInterior());
             callableStatement.setString(16,direccion.getNumeroExterior());
-            callableStatement.setInt(17,direccion.getColonia().getidColonia());
+            callableStatement.setInt(17,direccion.getColonia().getIdColonia());
             
             callableStatement.execute();
             

@@ -98,28 +98,6 @@ public class DireccionDAOImplementation implements iDireccion{
         return result;
     }
     @Override
-    public Result ADDDireccionSP(Direccion direccion){
-        Result result = new Result();
-        try{
-            jdbcTemplate.execute("{CALL DireccionADDSP(?,?,?,?,?)}", (CallableStatementCallback<Boolean>) callableStatement-> {
-                callableStatement.setInt(1, direccion.getIdDireccion());
-                callableStatement.setString(2, direccion.getCalle());
-                callableStatement.setString(3, direccion.getNumeroExterior());
-                callableStatement.setString(4, direccion.getNumeroInterior());
-                callableStatement.setInt(5, direccion.getColonia().getidColonia());
-                callableStatement.execute();
-                return true;
-            });
-          result.correct = true;          
-        
-        }catch(Exception ex){
-            result.correct = false;
-            result.errorMessage = ex.getLocalizedMessage();
-            result.ex = ex;
-        }
-        return result;
-    }
-    @Override
     public Result DELDireccionSP(int idDireccion){
         Result result = new Result();
         try{
@@ -136,5 +114,29 @@ public class DireccionDAOImplementation implements iDireccion{
             result.ex = ex;
         }
     return result;
+    }
+    
+    @Override
+    public Result Add(Direccion direccion){
+        Result result = new Result();
+        try{
+            jdbcTemplate.execute("{CALL DireccionAddSP(?,?,?,?,?)}",(CallableStatementCallback<Boolean>) callableStatement -> {
+                callableStatement.setString(1, direccion.getCalle());
+                callableStatement.setString(2, direccion.getNumeroInterior());
+                callableStatement.setString(3, direccion.getNumeroExterior());
+                callableStatement.setInt(4, direccion.Colonia.getIdColonia());
+                callableStatement.setInt(5, direccion.Usuario.getIdUsuario());
+                callableStatement.execute();
+                
+                return true;
+            });
+        result.correct = true;            
+        
+        }catch(Exception ex){
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        return result;
     }
 }
