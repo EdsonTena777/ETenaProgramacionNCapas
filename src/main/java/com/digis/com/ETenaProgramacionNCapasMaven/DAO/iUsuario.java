@@ -10,4 +10,5 @@ public interface iUsuario {
     Result UPDUsuarioSP(Usuario usuario);
     Result DELUsuarioSP(int idUsuario);
     Result UPDUsuarioImagenSP(Usuario usuario);
+    Result GetAllDinamico(String nombre, String apellidoPaterno, String apellidoMaterno, String rol);
 }

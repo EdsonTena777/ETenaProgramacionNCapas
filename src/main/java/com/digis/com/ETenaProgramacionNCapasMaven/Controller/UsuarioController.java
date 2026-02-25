@@ -16,6 +16,11 @@ import com.digis.com.ETenaProgramacionNCapasMaven.ML.Result;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Rol;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Usuario;
 import jakarta.validation.Valid;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +70,14 @@ public class UsuarioController {
         
         return "GetAll";
     }
+    
+    @PostMapping("/buscar") 
+    public String buscar( @RequestParam(required = false) String nombre, @RequestParam(required = false) String apellidoPaterno, @RequestParam(required = false) String apellidoMaterno, @RequestParam(required = false) String rol, Model model) {
+        Result result = usuarioDAOImplementation.GetAllDinamico( nombre, apellidoPaterno, apellidoMaterno, rol);
+        model.addAttribute("usuarios", result.objects); 
+        return "GetAll"; // reutiliza la misma vista para mostrar resultados
+    }
+    
     @GetMapping("/GetById")
     public String GetById(@RequestParam int idUsuario, Model model){
         
@@ -235,4 +248,69 @@ public class UsuarioController {
     public Result DelDireccionId(@PathVariable int idDireccion){
         return direccionDAOImplementation.DELDireccionSP(idDireccion);   
     }
-}
+    @GetMapping("/cargamasiva")
+    public String CargaMasiva() {
+        return "CargaMasiva";
+    }
+    
+    @PostMapping("/cargamasiva")
+    public String CargaMasiva(@RequestParam("archivo") MultipartFile archivo){
+        Result result = new Result();
+        try{
+            if (archivo != null && !archivo.isEmpty()){
+                String rutaBase = System.getProperty("user.dir");
+                String rutaCarpeta = "src/main/resources/archivosCM";
+                String fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmSS"));  
+                String nombreArchivo = fecha + archivo.getOriginalFilename();
+                String rutaArchivo = rutaBase + "/" + rutaCarpeta + "/" + nombreArchivo;
+                String extension = archivo.getOriginalFilename().split("\\.")[1];
+                File fileDestino = new File(rutaArchivo);
+                archivo.transferTo(fileDestino);
+                List<Usuario> usuarios = null;
+                
+                if(extension.equals("txt")){
+                    System.out.println(extension);
+                    usuarios = LecturaArchivoTxt(fileDestino); 
+                }else if(extension.equals("xlsx")){
+
+                }else{
+                    System.out.println("extension erronea");
+                }
+                result.correct = true;  
+            }
+        }catch(Exception ex){
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        return "CargaMasiva";
+    }
+    
+    public List<Usuario> LecturaArchivoTxt(File archivo) {
+        
+        List<Usuario> usuarios = new ArrayList<>();
+        Result result = new Result();
+        try(BufferedReader bufferedReader = new BufferedReader(new FileReader(archivo))){
+            String linea;
+            while((linea = bufferedReader.readLine()) != null){
+                String[] datos = linea.split("\\|");
+                Usuario usuario = new Usuario();
+                usuario.setUsername(datos[0]);
+                usuario.setNombre(datos[1]);
+                usuario.setApellidoPaterno(datos[2]);
+                usuario.setApellidoMaterno(datos[3]);
+                usuario.setTelefono(datos[4]);
+                usuario.setEmail(datos[5]);
+                usuario.setPassword(datos[6]);
+                usuarios.add(usuario); 
+            }
+        }catch(Exception ex){
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        
+        return usuarios;
+    }
+    
+}   

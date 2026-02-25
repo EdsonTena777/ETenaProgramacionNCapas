@@ -20,6 +20,22 @@
             </div>
     </div>
         </div>
+        <div class="container mt-4">
+            <form th:action="@{/buscar}" method="post" class="row g-3">
+                <div class="col-md-3">
+                    <input type="text" name="nombre" class="form-control" placeholder="Nombre...">
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="apellidoPaterno" class="form-control" placeholder="Apellido Paterno...">
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="rol" class="form-control" placeholder="Rol (Ej: Admin)">
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">Buscar</button>
+                </div>
+            </form>
+        </div>
         <div class="container-fluid ps-4 mt-3 pe-4">
             <div class="row mx-3">
                 <div class="col-md-12">
@@ -62,6 +78,7 @@
                                     <div class="mb-1"><i class="bi bi-envelope-at"><span th:text=" ${usuario.Email}"></span></i> </div>
                                     <div class="fw-bold"><i class="bi bi-telephone"><span th:text=" ${usuario.Telefono}"></span></i> </div>
                                     <div class="fw-bold"><i class="bi bi-phone"><span th:text=" ${usuario.Celular}"></span></i> </div>
+                                    <div class="fw-bold"><i class="bi bi-person-rolodex"><span th:text=" ${usuario.Roles.NombreRol}"></span></i> </div>
                                 </td>
                                 <td>
                                     <div th:each="direccion : ${usuario.Direcciones}" class="border-bottom mb-2 pb-1">
