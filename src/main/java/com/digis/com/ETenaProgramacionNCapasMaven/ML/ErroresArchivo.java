@@ -4,9 +4,9 @@ package com.digis.com.ETenaProgramacionNCapasMaven.ML;
 
 public class ErroresArchivo {
     
-    private int fila;
-    private String dato;
-    private String descripcion;
+    public int fila;
+    public String dato;
+    public String descripcion;
 
     public int getFila(){
         return fila;
@@ -28,7 +28,7 @@ public class ErroresArchivo {
         return descripcion;
     }
     
-    public void setDescripcion(String Descripcion){
+    public void setDescripcion(String descripcion){
         this.descripcion = descripcion;
     }
     

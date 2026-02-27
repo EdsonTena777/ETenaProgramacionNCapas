@@ -10,23 +10,37 @@ import com.digis.com.ETenaProgramacionNCapasMaven.DAO.RolDAOImplementation;
 import com.digis.com.ETenaProgramacionNCapasMaven.DAO.UsuarioDAOImplementation;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Colonia;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Direccion;
+import com.digis.com.ETenaProgramacionNCapasMaven.ML.ErroresArchivo;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Estado;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Municipio;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Result;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Rol;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Usuario;
+import com.digis.com.ETenaProgramacionNCapasMaven.Service.ValidationService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,6 +50,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping
@@ -61,6 +76,9 @@ public class UsuarioController {
     
     @Autowired
     private DireccionDAOImplementation direccionDAOImplementation;
+    
+    @Autowired
+    private ValidationService validationService;
     
     @GetMapping("/usuario")
     public String index(Model model){
@@ -254,7 +272,7 @@ public class UsuarioController {
     }
     
     @PostMapping("/cargamasiva")
-    public String CargaMasiva(@RequestParam("archivo") MultipartFile archivo){
+    public String CargaMasiva(@RequestParam("archivo") MultipartFile archivo, Model model, HttpSession session){
         Result result = new Result();
         try{
             if (archivo != null && !archivo.isEmpty()){
@@ -267,16 +285,25 @@ public class UsuarioController {
                 File fileDestino = new File(rutaArchivo);
                 archivo.transferTo(fileDestino);
                 List<Usuario> usuarios = null;
-                
+            
                 if(extension.equals("txt")){
-                    System.out.println(extension);
                     usuarios = LecturaArchivoTxt(fileDestino); 
                 }else if(extension.equals("xlsx")){
-
+                    usuarios = LecturaArchivoXLSX(fileDestino);
                 }else{
                     System.out.println("extension erronea");
                 }
-                result.correct = true;  
+                List<ErroresArchivo> errores = ValidarDatos(usuarios);
+                if (errores.isEmpty()) {
+                    model.addAttribute("errores", new ArrayList<>());
+                    model.addAttribute("totalErrores", 0);
+                    session.setAttribute("ruta", fileDestino);
+                } else {
+                    model.addAttribute("errores", errores);
+                    model.addAttribute("totalErrores", errores.size());
+                    return "CargaMasiva";
+                }
+
             }
         }catch(Exception ex){
             result.correct = false;
@@ -284,6 +311,59 @@ public class UsuarioController {
             result.ex = ex;
         }
         return "CargaMasiva";
+    }
+    
+    @GetMapping("/cargamasiva/procesar")
+    public String procesarCargaMasiva(RedirectAttributes redirectAttributes, HttpSession session) {
+        String rutaArchivo = session.getAttribute("ruta").toString();
+        List<Usuario> usuarios = LecturaArchivoXLSX(new File(rutaArchivo));
+        
+        Result result = usuarioDAOImplementation.AddAll(usuarios);
+        return "redirect:/usuario";
+    }
+    
+    public List<Usuario> LecturaArchivoXLSX(File archivo){
+        List<Usuario> usuarios = new ArrayList<>();
+        Result result = new Result();
+        try(InputStream inputStream = new FileInputStream(archivo);
+               XSSFWorkbook workbook = new XSSFWorkbook(inputStream)){
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            DataFormatter formatter = new DataFormatter();
+            usuarios = new ArrayList<>();
+            for (Row row : sheet){
+                Usuario usuario = new Usuario();
+                
+                usuario.setUsername(row.getCell(0).toString());
+                usuario.setNombre(row.getCell(1).toString());
+                usuario.setApellidoPaterno(row.getCell(2).toString());
+                usuario.setApellidoMaterno(row.getCell(3).toString());
+                usuario.setTelefono(formatter.formatCellValue(row.getCell(4)));
+                usuario.setEmail(row.getCell(5).toString());
+                usuario.setPassword(row.getCell(6).toString());
+                Cell celdaFecha = row.getCell(7);
+                usuario.setFechaNacimiento(celdaFecha.getDateCellValue());
+                usuario.setSexo(row.getCell(8).toString());
+                usuario.setCelular(formatter.formatCellValue(row.getCell(9)));
+                usuario.setCURP(row.getCell(10).toString());
+                usuario.Roles = new Rol();
+                usuario.Roles.setIdRol(Integer.parseInt(formatter.formatCellValue(row.getCell(11))));
+                Direccion direccion = new Direccion();
+                direccion.setCalle(row.getCell(12).toString());
+                direccion.setNumeroInterior(formatter.formatCellValue(row.getCell(13)));
+                direccion.setNumeroExterior(formatter.formatCellValue(row.getCell(14)));
+                direccion.Colonia = new Colonia();
+                direccion.Colonia.setIdColonia(Integer.parseInt(formatter.formatCellValue(row.getCell(15))));
+                usuario.getDirecciones().add(direccion);
+                usuarios.add(usuario);
+            }
+                
+        
+        }catch(Exception ex){
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        return usuarios;
     }
     
     public List<Usuario> LecturaArchivoTxt(File archivo) {
@@ -295,6 +375,7 @@ public class UsuarioController {
             while((linea = bufferedReader.readLine()) != null){
                 String[] datos = linea.split("\\|");
                 Usuario usuario = new Usuario();
+                usuario.setDirecciones(new ArrayList<>());
                 usuario.setUsername(datos[0]);
                 usuario.setNombre(datos[1]);
                 usuario.setApellidoPaterno(datos[2]);
@@ -302,7 +383,21 @@ public class UsuarioController {
                 usuario.setTelefono(datos[4]);
                 usuario.setEmail(datos[5]);
                 usuario.setPassword(datos[6]);
-                usuarios.add(usuario); 
+                SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+                usuario.setFechaNacimiento(formato.parse(datos[7]));
+                usuario.setSexo(datos[8]);
+                usuario.setCelular(datos[9]);
+                usuario.setCURP(datos[10]);
+                usuario.Roles = new Rol();
+                usuario.Roles.setIdRol(Integer.parseInt(datos[11]));
+                Direccion direccion = new Direccion();
+                direccion.setCalle(datos[12]);
+                direccion.setNumeroInterior(datos[13]);
+                direccion.setNumeroExterior(datos[14]);
+                direccion.Colonia = new Colonia();
+                direccion.Colonia.setIdColonia(Integer.parseInt(datos[15]));
+                usuario.getDirecciones().add(direccion);
+                usuarios.add(usuario);
             }
         }catch(Exception ex){
             result.correct = false;
@@ -312,5 +407,24 @@ public class UsuarioController {
         
         return usuarios;
     }
-    
+    public List<ErroresArchivo> ValidarDatos(List<Usuario> usuarios){
+        List<ErroresArchivo> errores = new ArrayList<>();
+        int fila = 0;
+        for (Usuario usuario : usuarios){
+            BindingResult bindingResult = validationService.ValidateObject(usuario);
+            fila++;
+            if(bindingResult.hasErrors()){
+                for(ObjectError objectError : bindingResult.getFieldErrors()){
+                    ErroresArchivo erroresArchivo = new ErroresArchivo();
+                    FieldError fieldError = (FieldError) objectError;
+                    erroresArchivo.setFila(fila);
+                    erroresArchivo.setDato(fieldError.getField()); 
+                    erroresArchivo.setDescripcion(fieldError.getDefaultMessage());
+                    errores.add(erroresArchivo);
+                }
+            }
+        }
+        return errores;
+    }
+
 }   

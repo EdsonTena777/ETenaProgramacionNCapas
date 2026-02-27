@@ -33,6 +33,30 @@
                     </div>
                 </div>
             </div>
+            <div th:if="${errores != null and #lists.isEmpty(errores)}">
+                <div class="alert alert-success">¡Archivo validado correctamente!</div>
+                <a th:href="@{/cargamasiva/procesar}" class="btn btn-success">Procesar carga masiva</a>
+            </div>
+            <div th:if="${mensaje != null}" class="alert alert-danger" th:text="${mensaje}"></div>
+                <div th:if="${errores != null and !#lists.isEmpty(errores)}">
+                    <h5>Errores encontrados: <span th:text="${totalErrores}"></span></h5>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Fila</th>
+                                <th>Campo</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="errores : ${errores}">
+                                <td th:text="${errores.fila}"></td>
+                                <td th:text="${errores.dato}"></td>
+                                <td th:text="${errores.descripcion}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
         </div>
         <script>
             function mostrarForm() {

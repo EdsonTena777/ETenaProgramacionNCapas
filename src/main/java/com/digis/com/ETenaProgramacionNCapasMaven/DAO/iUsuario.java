@@ -2,6 +2,7 @@ package com.digis.com.ETenaProgramacionNCapasMaven.DAO;
 
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Result;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Usuario;
+import java.util.List;
 
 public interface iUsuario {
     Result GetAll();
@@ -11,4 +12,5 @@ public interface iUsuario {
     Result DELUsuarioSP(int idUsuario);
     Result UPDUsuarioImagenSP(Usuario usuario);
     Result GetAllDinamico(String nombre, String apellidoPaterno, String apellidoMaterno, String rol);
+    Result AddAll(List<Usuario> usuarios);
 }

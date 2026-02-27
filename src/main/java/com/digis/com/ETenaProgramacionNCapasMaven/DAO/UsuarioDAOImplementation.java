@@ -8,6 +8,8 @@ import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.*; 
+import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository 
 public class UsuarioDAOImplementation implements iUsuario {
@@ -371,6 +373,42 @@ public class UsuarioDAOImplementation implements iUsuario {
                 }
                 return true;
         }); 
+        return result;
+    }
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public Result AddAll(List<Usuario> usuarios){
+        Result result = new Result();
+        try{
+            jdbcTemplate.batchUpdate("{CALL UsuarioDireccionADDSP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}",
+                    usuarios,
+                    usuarios.size(),
+                    (callableStatement, usuario) -> {
+                        callableStatement.setString(1, usuario.getUsername());
+                        callableStatement.setString(2, usuario.getNombre());
+                        callableStatement.setString(3, usuario.getApellidoPaterno());
+                        callableStatement.setString(4,usuario.getApellidoMaterno());
+                        callableStatement.setString(5, usuario.getTelefono());
+                        callableStatement.setString(6, usuario.getEmail());
+                        callableStatement.setString(7, usuario.getPassword());
+                        callableStatement.setDate(9, new java.sql.Date(usuario.getFechaNacimiento().getTime()));
+                        callableStatement.setString(10, String.valueOf(usuario.getSexo()));
+                        callableStatement.setString(11, usuario.getCelular());
+                        callableStatement.setString(12, usuario.getCURP());
+                        callableStatement.setInt(13, usuario.getRoles().getIdRol());
+                        Direccion direccion = usuario.getDirecciones().get(0);
+                        callableStatement.setString(14,direccion.getCalle());
+                        callableStatement.setString(15, direccion.getNumeroInterior());
+                        callableStatement.setString(16,direccion.getNumeroExterior());
+                        callableStatement.setInt(17,direccion.getColonia().getIdColonia());
+                        
+                    });
+        
+        }catch(Exception ex){
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
         return result;
     }
 }
