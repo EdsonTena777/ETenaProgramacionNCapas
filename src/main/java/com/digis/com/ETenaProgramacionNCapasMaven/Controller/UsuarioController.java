@@ -271,6 +271,18 @@ public class UsuarioController {
         return "CargaMasiva";
     }
     
+    @PostMapping("/usuario/status")
+    @ResponseBody
+    public Result cambiarStatus(@RequestParam int idUsuario, @RequestParam int status){
+        if(status != 0 && status!= 1){
+            Result result = new Result();
+            result.correct = false;
+            result.errorMessage = "Status invalido";
+            return result;
+        }
+        return usuarioDAOImplementation.UpdateStatusSP(idUsuario, status);
+    }
+    
     @PostMapping("/cargamasiva")
     public String CargaMasiva(@RequestParam("archivo") MultipartFile archivo, Model model, HttpSession session){
         Result result = new Result();
@@ -297,6 +309,7 @@ public class UsuarioController {
                 if (errores.isEmpty()) {
                     model.addAttribute("errores", new ArrayList<>());
                     model.addAttribute("totalErrores", 0);
+                    
                     session.setAttribute("ruta", fileDestino);
                 } else {
                     model.addAttribute("errores", errores);
@@ -315,11 +328,43 @@ public class UsuarioController {
     
     @GetMapping("/cargamasiva/procesar")
     public String procesarCargaMasiva(RedirectAttributes redirectAttributes, HttpSession session) {
-        String rutaArchivo = session.getAttribute("ruta").toString();
-        List<Usuario> usuarios = LecturaArchivoXLSX(new File(rutaArchivo));
-        
+
+        Object rutaObj = session.getAttribute("ruta");
+        if (rutaObj == null) {
+            redirectAttributes.addFlashAttribute("mensaje", "No hay archivo pendiente por procesar.");
+            return "redirect:/cargamasiva";
+        }
+
+        String rutaArchivo = rutaObj.toString();
+        File archivo = new File(rutaArchivo);
+
+        if (!archivo.exists()) {
+            redirectAttributes.addFlashAttribute("mensaje", "El archivo no existe.");
+            return "redirect:/cargamasiva";
+        }
+
+        String extension = rutaArchivo.substring(rutaArchivo.lastIndexOf('.') + 1).toLowerCase();
+
+        List<Usuario> usuarios;
+        if (extension.equals("txt")) {
+            usuarios = LecturaArchivoTxt(archivo);
+        } else if (extension.equals("xlsx")) {
+            usuarios = LecturaArchivoXLSX(archivo);
+        } else {
+            redirectAttributes.addFlashAttribute("mensaje", "Extensión no soportada: " + extension);
+            return "redirect:/cargamasiva";
+        }
+
         Result result = usuarioDAOImplementation.AddAll(usuarios);
-        return "redirect:/usuario";
+
+        if (result.correct) {
+            session.removeAttribute("ruta"); 
+            redirectAttributes.addFlashAttribute("mensaje", "Carga masiva insertada correctamente.");
+            return "redirect:/usuario";
+        } else {
+            redirectAttributes.addFlashAttribute("mensaje", result.errorMessage);
+            return "redirect:/cargamasiva";
+        }
     }
     
     public List<Usuario> LecturaArchivoXLSX(File archivo){

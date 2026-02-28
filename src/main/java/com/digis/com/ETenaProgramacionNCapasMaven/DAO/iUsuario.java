@@ -13,4 +13,5 @@ public interface iUsuario {
     Result UPDUsuarioImagenSP(Usuario usuario);
     Result GetAllDinamico(String nombre, String apellidoPaterno, String apellidoMaterno, String rol);
     Result AddAll(List<Usuario> usuarios);
+    Result UpdateStatusSP(int idUsuario, int status);
 }
