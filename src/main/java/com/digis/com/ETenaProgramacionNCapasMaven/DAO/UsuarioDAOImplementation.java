@@ -1,5 +1,5 @@
 package com.digis.com.ETenaProgramacionNCapasMaven.DAO;
-
+//cambios antes de JPA ORM
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Result;
 import java.sql.ResultSet;
 import java.util.ArrayList;
