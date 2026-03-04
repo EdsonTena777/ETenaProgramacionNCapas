@@ -1,66 +1,64 @@
 
-package com.digis.com.ETenaProgramacionNCapasMaven.ML;
+package com.digis.com.ETenaProgramacionNCapasMaven.JPA;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import com.digis.com.ETenaProgramacionNCapasMaven.JPA.Direccion;
+import com.digis.com.ETenaProgramacionNCapasMaven.JPA.Rol;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.springframework.format.annotation.DateTimeFormat;
 
-
+@Entity
 public class Usuario {
     
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idusuario")
     private int idUsuario;
-    @NotBlank (message = "El usuario es obligatorio")
-    @Pattern (regexp = "^[a-zA-Z0-9]+$", message = "El usuario debe contener letras y numeros")
-    @JsonProperty("username")
+    @Column(name = "username")
     private String Username;
+    @Lob
+    @Column(name = "imagen")
     private String imagen;
-    @NotBlank(message = "El nombre es obligatorio")
-    @Pattern (regexp = "^[a-zA-Z ]+$", message = "El nombre solo puede contener letras")
-    @JsonProperty("nombre")
+    @Column(name = "nombre")
     private String Nombre;
-    @NotBlank(message = "El Apellido paterno es obligatorio")
-    @Pattern (regexp = "^[a-zA-Z]+$", message = "El apellido paterno solo puede contener letras")
-    @JsonProperty("apellidoPaterno")
+    @Column(name = "apellidopaterno")
     private String ApellidoPaterno;
-    @Pattern (regexp = "^[a-zA-Z]+$", message = "El apellido materno solo puede contener letras")
-    @JsonProperty("apellidoMaterno")
+    @Column(name = "apellidomaterno")
     private String ApellidoMaterno;
-    @NotBlank(message = "El email es obligatoria")
-    @Pattern(regexp ="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", message = "El correo debe tener @ y dominio")
-    @JsonProperty("email")
+    @Column(name = "email")
     private String Email;
-    @NotBlank(message = "La contraseña es obligatoria")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$*!%?&])[^\\s]{8,15}$", message = "Debe tener entre 8 y 15 caracteres, una mayúscula, una minúscula, un número, un carácter especial y sin espacios")
+    @Column(name = "password")
     private String Password;
-    @NotNull(message = "La fecha de nacimiento es obligatoria")
-    @JsonProperty("fechaNacimiento")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "fechanacimiento")
+    @Temporal(TemporalType.DATE)
     private Date FechaNacimiento;
-    @NotNull (message = "Debe seleccionar un sexo")
-    @JsonProperty("sexo")
+    @Column(name = "sexo")
     private String Sexo;
-    @NotBlank(message = "El Telefono es obligatorio")
-    @Pattern (regexp = "^[0-9]+$", message = "El telefono solo puede contener numeros")
-    @JsonProperty("telefono")
+    @Column(name = "telefono")
     private String Telefono;
-    @Pattern (regexp = "^[0-9]+$", message = "El telefono solo puede contener numeros")
-    @JsonProperty("celular")
+    @Column(name = "celular")
     private String Celular;
-    @NotBlank(message = "El CURP es obligatorio")
-    @Pattern (regexp = "^[A-Z0-9]+$", message = "El CURP solo puede contener numeros y letras mayusculas")
-    @JsonProperty("curp")
+    @Column(name = "curp")
     private String CURP;
-    @JsonProperty("roles")
-    public Rol Roles;
-    public List<Direccion> Direcciones;
+    @Column(name = "status")
     private int status;
+    @ManyToOne
+    @JoinColumn(name = "idrol")
+    public Rol Roles;
+    @OneToMany(mappedBy = "Usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<Direccion> Direcciones;
     public Usuario() {
         this.Direcciones = new ArrayList<>();
 }

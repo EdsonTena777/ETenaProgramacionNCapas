@@ -8,6 +8,8 @@ import com.digis.com.ETenaProgramacionNCapasMaven.DAO.MunicipioDAOImplementation
 import com.digis.com.ETenaProgramacionNCapasMaven.DAO.PaisDAOImplementation;
 import com.digis.com.ETenaProgramacionNCapasMaven.DAO.RolDAOImplementation;
 import com.digis.com.ETenaProgramacionNCapasMaven.DAO.UsuarioDAOImplementation;
+import com.digis.com.ETenaProgramacionNCapasMaven.DAO.UsuarioDAOJPAImplementation;
+import com.digis.com.ETenaProgramacionNCapasMaven.DAO.DireccionDAOJPAImplementation;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Colonia;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Direccion;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.ErroresArchivo;
@@ -55,6 +57,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping
 public class UsuarioController {
+    @Autowired
+    private DireccionDAOJPAImplementation direccionDAOJPAImplementation;
+    
+    @Autowired
+    private UsuarioDAOJPAImplementation usuarioDAOJPAImplementation;
     
     @Autowired
     private UsuarioDAOImplementation usuarioDAOImplementation;
@@ -82,9 +89,12 @@ public class UsuarioController {
     
     @GetMapping("/usuario")
     public String index(Model model){
-        Result result = usuarioDAOImplementation.GetAll();
         
+        Result result =usuarioDAOJPAImplementation.GetAll();
+        //Result result = usuarioDAOImplementation.GetAll();
+        System.out.println("usuarios:" + result.objects);
         model.addAttribute("usuarios", result.objects);
+        
         
         return "GetAll";
     }
@@ -99,7 +109,7 @@ public class UsuarioController {
     @GetMapping("/GetById")
     public String GetById(@RequestParam int idUsuario, Model model){
         
-        Result result = usuarioDAOImplementation.GetById(idUsuario);
+        Result result = usuarioDAOJPAImplementation.GetById(idUsuario);
         
         model.addAttribute("usuario", result.object);
         
@@ -109,7 +119,7 @@ public class UsuarioController {
         public String UsuarioDetail(@RequestParam int idUsuario,Model model){
 
         
-        Result resultUsuario = usuarioDAOImplementation.GetById(idUsuario);
+        Result resultUsuario = usuarioDAOJPAImplementation.GetById(idUsuario);
         Result resultRol = rolDAOImplementation.rolGetAll();
         Result resultPaises = paisDAOImplementation.paisGetAll();
         Result resultEstados = estadoDAOImplementation.estadoGetAll();
@@ -117,7 +127,7 @@ public class UsuarioController {
         Usuario usuario = (Usuario) resultUsuario.object;
         
 
-        model.addAttribute("usuario", usuario);
+        model.addAttribute("usuario", resultUsuario.object);
         model.addAttribute("roles", resultRol.objects);
         model.addAttribute("paises", resultPaises.objects);
         model.addAttribute("estados", resultEstados.objects);
@@ -225,18 +235,19 @@ public class UsuarioController {
 
         System.out.println("Ejecutando procedimiento de guardado...");
         usuarioDAOImplementation.UsuarioDireccionADDSP(usuario);
+        //usuarioDAOJPAImplementation.Add(usuario);
         return "redirect:/usuario";
     }
     @PostMapping("/usuario/updateImagen")
     @ResponseBody
     public boolean UpdateImagen(@RequestBody Usuario usuario){
-        Result result = usuarioDAOImplementation.UPDUsuarioImagenSP(usuario);
+        Result result = usuarioDAOJPAImplementation.UpdateImagen(usuario);
         return result.correct;
     }
     @PostMapping("/usuario/update")
     @ResponseBody
     public Result updateUsuario(@RequestBody Usuario usuario){
-        return usuarioDAOImplementation.UPDUsuarioSP(usuario);
+        return usuarioDAOJPAImplementation.UpdateUsuario(usuario);
     }
     
     @GetMapping("/usuario/estados/{idPais}")
@@ -264,7 +275,7 @@ public class UsuarioController {
     @GetMapping("/direccion/delete/{idDireccion}")
     @ResponseBody
     public Result DelDireccionId(@PathVariable int idDireccion){
-        return direccionDAOImplementation.DELDireccionSP(idDireccion);   
+        return direccionDAOJPAImplementation .DeleteDireccion(idDireccion);
     }
     @GetMapping("/cargamasiva")
     public String CargaMasiva() {
@@ -280,7 +291,7 @@ public class UsuarioController {
             result.errorMessage = "Status invalido";
             return result;
         }
-        return usuarioDAOImplementation.UpdateStatusSP(idUsuario, status);
+        return usuarioDAOJPAImplementation.UpdateStatus(idUsuario, status);
     }
     
     @PostMapping("/cargamasiva")

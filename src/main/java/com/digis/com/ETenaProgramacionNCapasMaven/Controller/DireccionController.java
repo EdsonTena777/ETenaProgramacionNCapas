@@ -2,6 +2,7 @@
 package com.digis.com.ETenaProgramacionNCapasMaven.Controller;
 
 import com.digis.com.ETenaProgramacionNCapasMaven.DAO.DireccionDAOImplementation;
+import com.digis.com.ETenaProgramacionNCapasMaven.DAO.DireccionDAOJPAImplementation;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Direccion;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/direccion")
 public class DireccionController {
+    
+    @Autowired 
+    private DireccionDAOJPAImplementation direccionDAOJPAImplementation;
 
     @Autowired
     private DireccionDAOImplementation direccionDAOImplementation;
@@ -25,7 +29,7 @@ public class DireccionController {
     @GetMapping("/getbyid/{idDireccion}")
     public String getById(@PathVariable int idDireccion, Model model) {
 
-        Result result = direccionDAOImplementation.GetById(idDireccion);
+        Result result = direccionDAOJPAImplementation.GetById(idDireccion);
 
         if (!result.correct) {
             model.addAttribute("mensaje", result.errorMessage);
@@ -52,4 +56,5 @@ public class DireccionController {
     public Result add(@RequestBody Direccion direccion){
         return direccionDAOImplementation.Add(direccion);
     }
+    
 }

@@ -160,10 +160,18 @@
 
           $.post("/usuario/status", { idUsuario, status })
             .done(resp => {
-              if (!resp.correct) {
-                Swal.fire("Error", resp.errorMessage || "No se pudo actualizar.", "error");
-                sw.checked = !sw.checked; 
-              }
+                if (!resp.correct) {
+                    Swal.fire("Error", resp.errorMessage || "No se pudo actualizar.", "error");
+                    sw.checked = !sw.checked; 
+                } else{
+                    Swal.fire({
+                        icon: "success",
+                        title: "Estatus actualizado",
+                        text: "El estatus fue correctamente actualizado",
+                        timer: 1220,
+                        showConfirmButton: false
+                    });
+                }
             })
             .fail(() => {
               Swal.fire("Error", "No se pudo conectar con el servidor.", "error");
