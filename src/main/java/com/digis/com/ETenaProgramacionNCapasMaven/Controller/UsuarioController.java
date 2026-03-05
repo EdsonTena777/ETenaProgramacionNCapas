@@ -2,6 +2,7 @@
 package com.digis.com.ETenaProgramacionNCapasMaven.Controller;
 
 import com.digis.com.ETenaProgramacionNCapasMaven.DAO.ColoniaDAOImplementation;
+import com.digis.com.ETenaProgramacionNCapasMaven.DAO.ColoniaDAOJPAImplementation;
 import com.digis.com.ETenaProgramacionNCapasMaven.DAO.DireccionDAOImplementation;
 import com.digis.com.ETenaProgramacionNCapasMaven.DAO.EstadoDAOImplementation;
 import com.digis.com.ETenaProgramacionNCapasMaven.DAO.MunicipioDAOImplementation;
@@ -10,6 +11,8 @@ import com.digis.com.ETenaProgramacionNCapasMaven.DAO.RolDAOImplementation;
 import com.digis.com.ETenaProgramacionNCapasMaven.DAO.UsuarioDAOImplementation;
 import com.digis.com.ETenaProgramacionNCapasMaven.DAO.UsuarioDAOJPAImplementation;
 import com.digis.com.ETenaProgramacionNCapasMaven.DAO.DireccionDAOJPAImplementation;
+import com.digis.com.ETenaProgramacionNCapasMaven.DAO.EstadoDAOJPAImplementation;
+import com.digis.com.ETenaProgramacionNCapasMaven.DAO.MunicipioDAOJPAImplementation;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Colonia;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Direccion;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.ErroresArchivo;
@@ -85,6 +88,15 @@ public class UsuarioController {
     private DireccionDAOImplementation direccionDAOImplementation;
     
     @Autowired
+    private EstadoDAOJPAImplementation estadoDAOJPAImplementation;
+    
+    @Autowired
+    private MunicipioDAOJPAImplementation municipioDAOJPAImplementation;
+    
+    @Autowired
+    private ColoniaDAOJPAImplementation coloniaDAOJPAImplementation;
+    
+    @Autowired
     private ValidationService validationService;
     
     @GetMapping("/usuario")
@@ -101,7 +113,8 @@ public class UsuarioController {
     
     @PostMapping("/buscar") 
     public String buscar( @RequestParam(required = false) String nombre, @RequestParam(required = false) String apellidoPaterno, @RequestParam(required = false) String apellidoMaterno, @RequestParam(required = false) String rol, Model model) {
-        Result result = usuarioDAOImplementation.GetAllDinamico( nombre, apellidoPaterno, apellidoMaterno, rol);
+        //Result result = usuarioDAOImplementation.GetAllDinamico( nombre, apellidoPaterno, apellidoMaterno, rol);
+        Result result = usuarioDAOJPAImplementation.GetAllDinamico(nombre, apellidoPaterno, apellidoMaterno, rol);
         model.addAttribute("usuarios", result.objects); 
         return "GetAll"; // reutiliza la misma vista para mostrar resultados
     }
@@ -234,7 +247,8 @@ public class UsuarioController {
             }
 
         System.out.println("Ejecutando procedimiento de guardado...");
-        usuarioDAOImplementation.UsuarioDireccionADDSP(usuario);
+        //usuarioDAOImplementation.UsuarioDireccionADDSP(usuario);
+        usuarioDAOJPAImplementation.Add(usuario);
         //usuarioDAOJPAImplementation.Add(usuario);
         return "redirect:/usuario";
     }
@@ -253,29 +267,33 @@ public class UsuarioController {
     @GetMapping("/usuario/estados/{idPais}")
     @ResponseBody
     public Result GetByIdPais(@PathVariable int idPais){
-        return estadoDAOImplementation.GetByIdPais(idPais);
+        return estadoDAOJPAImplementation.GetByIdPais(idPais);
     }
     
     @GetMapping("/usuario/municipios/{idEstado}")
     @ResponseBody
     public Result municipioGetById(@PathVariable int idEstado){
-        return municipioDAOImplementation.municipioGetById(idEstado);
+        return municipioDAOJPAImplementation.GetByIdEstado(idEstado);
     }
     
     @GetMapping("/usuario/colonias/{idMunicipio}")
     @ResponseBody
     public Result GetByIdMunicipio(@PathVariable int idMunicipio){
-        return coloniaDAOImplementation.GetByIdMunicipio(idMunicipio);
+        return coloniaDAOJPAImplementation.GetByIdMunicipio(idMunicipio);
     }
     @PostMapping("/usuario/delete")
     @ResponseBody
     public Result DelUsaurioId(@RequestParam int idUsuario){
-        return usuarioDAOImplementation.DELUsuarioSP(idUsuario);
+        com.digis.com.ETenaProgramacionNCapasMaven.ML.Usuario usuarioML = new com.digis.com.ETenaProgramacionNCapasMaven.ML.Usuario();
+        usuarioML.setIdUsuario(idUsuario);
+        return usuarioDAOJPAImplementation.Delete(usuarioML);
     }
     @GetMapping("/direccion/delete/{idDireccion}")
     @ResponseBody
     public Result DelDireccionId(@PathVariable int idDireccion){
-        return direccionDAOJPAImplementation .DeleteDireccion(idDireccion);
+        com.digis.com.ETenaProgramacionNCapasMaven.ML.Direccion direccionML = new com.digis.com.ETenaProgramacionNCapasMaven.ML.Direccion();
+        direccionML.setIdDireccion(idDireccion);
+        return direccionDAOJPAImplementation .DeleteDireccion(direccionML);
     }
     @GetMapping("/cargamasiva")
     public String CargaMasiva() {
@@ -284,15 +302,14 @@ public class UsuarioController {
     
     @PostMapping("/usuario/status")
     @ResponseBody
-    public Result cambiarStatus(@RequestParam int idUsuario, @RequestParam int status){
-        if(status != 0 && status!= 1){
-            Result result = new Result();
-            result.correct = false;
-            result.errorMessage = "Status invalido";
-            return result;
-        }
-        return usuarioDAOJPAImplementation.UpdateStatus(idUsuario, status);
+    public Result cambiarStatus(@RequestParam int idUsuario, @RequestParam int status) {
+        com.digis.com.ETenaProgramacionNCapasMaven.ML.Usuario usuarioML = new com.digis.com.ETenaProgramacionNCapasMaven.ML.Usuario();
+
+        usuarioML.setIdUsuario(idUsuario);
+        usuarioML.setStatus(status);
+        return usuarioDAOJPAImplementation.UpdateStatus(usuarioML);
     }
+
     
     @PostMapping("/cargamasiva")
     public String CargaMasiva(@RequestParam("archivo") MultipartFile archivo, Model model, HttpSession session){
@@ -366,14 +383,15 @@ public class UsuarioController {
             return "redirect:/cargamasiva";
         }
 
-        Result result = usuarioDAOImplementation.AddAll(usuarios);
+        Result result = usuarioDAOJPAImplementation.AddAll(usuarios);
 
         if (result.correct) {
             session.removeAttribute("ruta"); 
             redirectAttributes.addFlashAttribute("mensaje", "Carga masiva insertada correctamente.");
             return "redirect:/usuario";
-        } else {
+        }   else {
             redirectAttributes.addFlashAttribute("mensaje", result.errorMessage);
+            System.out.println(result.errorMessage);
             return "redirect:/cargamasiva";
         }
     }

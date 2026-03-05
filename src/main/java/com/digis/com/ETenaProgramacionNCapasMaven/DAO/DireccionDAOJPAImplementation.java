@@ -1,6 +1,7 @@
 
 package com.digis.com.ETenaProgramacionNCapasMaven.DAO;
 
+import com.digis.com.ETenaProgramacionNCapasMaven.JPA.Colonia;
 import com.digis.com.ETenaProgramacionNCapasMaven.JPA.Direccion;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Result;
 import jakarta.persistence.EntityManager;
@@ -43,7 +44,9 @@ public class DireccionDAOJPAImplementation implements iDireccionJPA{
             direccionJPA.setCalle(direccionML.getCalle());
             direccionJPA.setNumeroInterior(direccionML.getNumeroInterior());
             direccionJPA.setNumeroExterior(direccionML.getNumeroExterior());
-            direccionJPA.Colonia.setIdColonia(direccionML.Colonia.getIdColonia());
+            Colonia coloniaJPA = entityManager.find(Colonia.class, direccionML.getColonia().getIdColonia());
+            direccionJPA.setColonia(coloniaJPA);
+            result.correct = true;
         }catch(Exception ex){
             result.correct = false;
             result.errorMessage = ex.getLocalizedMessage();
@@ -54,11 +57,32 @@ public class DireccionDAOJPAImplementation implements iDireccionJPA{
     
     @Override
     @Transactional
-    public Result DeleteDireccion(int idDireccion){
+    public Result DeleteDireccion(com.digis.com.ETenaProgramacionNCapasMaven.ML.Direccion direccionML){
         Result result = new Result();
         try{
-            com.digis.com.ETenaProgramacionNCapasMaven.JPA.Direccion direccionJPA = entityManager.find(com.digis.com.ETenaProgramacionNCapasMaven.JPA.Direccion.class, idDireccion);
-            entityManager.remove(direccionJPA);
+            com.digis.com.ETenaProgramacionNCapasMaven.JPA.Direccion direccionJPA = entityManager.find(com.digis.com.ETenaProgramacionNCapasMaven.JPA.Direccion.class, direccionML.getIdDireccion());
+            if(direccionJPA != null){
+                entityManager.remove(direccionJPA);
+                result.correct = true;
+            }
+        }catch(Exception ex){
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+    return result;    
+    }
+    @Override
+    @Transactional
+    public Result AddDireccion(com.digis.com.ETenaProgramacionNCapasMaven.ML.Direccion direccionML){
+        Result result = new Result();
+        try{
+            com.digis.com.ETenaProgramacionNCapasMaven.JPA.Direccion direccionJPA = modelMapper.map(direccionML, com.digis.com.ETenaProgramacionNCapasMaven.JPA.Direccion.class);
+            com.digis.com.ETenaProgramacionNCapasMaven.JPA.Colonia coloniaJPA = entityManager.find(com.digis.com.ETenaProgramacionNCapasMaven.JPA.Colonia.class, direccionML.Colonia.getIdColonia());
+            com.digis.com.ETenaProgramacionNCapasMaven.JPA.Usuario usuarioJPA = entityManager.find(com.digis.com.ETenaProgramacionNCapasMaven.JPA.Usuario.class, direccionML.Usuario.getIdUsuario());
+            direccionJPA.setColonia(coloniaJPA);
+            direccionJPA.setUsuario(usuarioJPA);
+            entityManager.persist(direccionJPA);
             result.correct = true;
         }catch(Exception ex){
             result.correct = false;

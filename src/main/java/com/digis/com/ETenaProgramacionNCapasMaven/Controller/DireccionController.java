@@ -48,13 +48,14 @@ public class DireccionController {
     @PostMapping("/update")
     @ResponseBody
     public Result update(@RequestBody Direccion direccion) {
-        return direccionDAOImplementation.Update(direccion);
+        return direccionDAOJPAImplementation.UpdateDireccion(direccion);
     }
     
     @PostMapping("/add")
     @ResponseBody
-    public Result add(@RequestBody Direccion direccion){
-        return direccionDAOImplementation.Add(direccion);
+    public Result add(@RequestBody com.digis.com.ETenaProgramacionNCapasMaven.ML.Direccion direccionML) {
+        return direccionDAOJPAImplementation.AddDireccion(direccionML);
     }
+
     
 }
