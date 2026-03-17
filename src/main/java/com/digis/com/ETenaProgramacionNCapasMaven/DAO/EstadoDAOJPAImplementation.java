@@ -41,4 +41,19 @@ public class EstadoDAOJPAImplementation implements iEstadoJPA{
         }
     return result;     
     }
+    @Override
+    public Result GetAll(){
+        Result result = new Result();
+        try{
+            TypedQuery<Estado> queryEstado = entityManager.createQuery("FROM Estado", Estado.class);
+            List<Estado> estados = queryEstado.getResultList();
+            result.objects = (List) estados;
+            result.correct = true;
+        }catch(Exception ex){
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+    return result;    
+    }
 }

@@ -13,6 +13,8 @@ import com.digis.com.ETenaProgramacionNCapasMaven.DAO.UsuarioDAOJPAImplementatio
 import com.digis.com.ETenaProgramacionNCapasMaven.DAO.DireccionDAOJPAImplementation;
 import com.digis.com.ETenaProgramacionNCapasMaven.DAO.EstadoDAOJPAImplementation;
 import com.digis.com.ETenaProgramacionNCapasMaven.DAO.MunicipioDAOJPAImplementation;
+import com.digis.com.ETenaProgramacionNCapasMaven.DAO.PaisDAOJPAImplementation;
+import com.digis.com.ETenaProgramacionNCapasMaven.DAO.RolDAOJPAImplementation;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Colonia;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.Direccion;
 import com.digis.com.ETenaProgramacionNCapasMaven.ML.ErroresArchivo;
@@ -97,6 +99,11 @@ public class UsuarioController {
     private ColoniaDAOJPAImplementation coloniaDAOJPAImplementation;
     
     @Autowired
+    private RolDAOJPAImplementation rolDAOJPAImplementation;
+    
+    @Autowired PaisDAOJPAImplementation paisDAOJPAImplementation;
+    
+    @Autowired
     private ValidationService validationService;
     
     @GetMapping("/usuario")
@@ -133,9 +140,9 @@ public class UsuarioController {
 
         
         Result resultUsuario = usuarioDAOJPAImplementation.GetById(idUsuario);
-        Result resultRol = rolDAOImplementation.rolGetAll();
-        Result resultPaises = paisDAOImplementation.paisGetAll();
-        Result resultEstados = estadoDAOImplementation.estadoGetAll();
+        Result resultRol = rolDAOJPAImplementation.rolGetAll();
+        Result resultPaises = paisDAOJPAImplementation.GetAll();
+        Result resultEstados = estadoDAOJPAImplementation.GetAll();
         
         Usuario usuario = (Usuario) resultUsuario.object;
         
@@ -157,9 +164,9 @@ public class UsuarioController {
         usuario.setDirecciones(new ArrayList<>());
         usuario.getDirecciones().add(direccion);
         
-        Result resultPaises = paisDAOImplementation.paisGetAll();
-        Result resultRoles = rolDAOImplementation.rolGetAll();
-        Result resultEstados = estadoDAOImplementation.estadoGetAll();
+        Result resultRoles = rolDAOJPAImplementation.rolGetAll();
+        Result resultPaises = paisDAOJPAImplementation.GetAll();
+        Result resultEstados = estadoDAOJPAImplementation.GetAll();
         
         model.addAttribute("estados", resultEstados.objects);
         model.addAttribute("roles", resultRoles.objects);
@@ -173,9 +180,9 @@ public class UsuarioController {
             bindingResult.getAllErrors().forEach(error -> {
             System.out.println(error.getDefaultMessage());
             });
-            Result resultPaises = paisDAOImplementation.paisGetAll();
-            Result resultEstados = estadoDAOImplementation.estadoGetAll();
-            Result resultRoles = rolDAOImplementation.rolGetAll();
+            Result resultRoles = rolDAOJPAImplementation.rolGetAll();
+            Result resultPaises = paisDAOJPAImplementation.GetAll();
+            Result resultEstados = estadoDAOJPAImplementation.GetAll();
             
             model.addAttribute("paises", resultPaises.objects);
             model.addAttribute("estados", resultEstados.objects);
@@ -203,7 +210,7 @@ public class UsuarioController {
 
             if(idEstado != 0){
                 Result resultMunicipios =
-                    municipioDAOImplementation.municipioGetById(idEstado);
+                    municipioDAOJPAImplementation.GetByIdEstado(idEstado);
                 model.addAttribute("municipios", resultMunicipios.objects);
             }else{
                 model.addAttribute("municipios", new ArrayList<>());
@@ -217,7 +224,7 @@ public class UsuarioController {
 
             if(idMunicipio != 0){
                 Result resultColonias =
-                    coloniaDAOImplementation.GetByIdMunicipio(idMunicipio);
+                    coloniaDAOJPAImplementation.GetByIdMunicipio(idMunicipio);
                 model.addAttribute("colonias", resultColonias.objects);
             }else{
                 model.addAttribute("colonias", new ArrayList<>());
