@@ -60,7 +60,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping
+@RequestMapping("/usuario")
 public class UsuarioController {
     @Autowired
     private DireccionDAOJPAImplementation direccionDAOJPAImplementation;
@@ -106,7 +106,7 @@ public class UsuarioController {
     @Autowired
     private ValidationService validationService;
     
-    @GetMapping("/usuario")
+    @GetMapping("/getall")
     public String index(Model model){
         
         Result result =usuarioDAOJPAImplementation.GetAll();

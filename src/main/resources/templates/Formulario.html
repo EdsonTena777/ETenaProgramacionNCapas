@@ -17,11 +17,11 @@
             <div class="col-2 py-4 text-center">  
             </div>
             <div class="col-4 text-center">
-                <a href="/usuario" class="btn btn-warning w-25 rounded bi bi-arrow-return-left"></a>
+                <a href="/usuario/getall" class="btn btn-warning w-25 rounded bi bi-arrow-return-left"></a>
             </div>
     </div>
 </div>
-<form th:action="@{/form}" method="post" th:object="${usuario}" enctype="multipart/form-data">
+<form th:action="@{/usuario/form}" method="post" th:object="${usuario}" enctype="multipart/form-data">
 <div class="container py-4">
     <div class="p-4 shadow-lg rounded bg-white">
     <div class="row mb-4">

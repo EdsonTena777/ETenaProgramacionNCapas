@@ -16,4 +16,5 @@ public interface iUsuarioJPA {
     Result UpdateImagen(com.digis.com.ETenaProgramacionNCapasMaven.ML.Usuario usuarioML);
     Result UpdateStatus(com.digis.com.ETenaProgramacionNCapasMaven.ML.Usuario usuarioML);
     Result Delete(com.digis.com.ETenaProgramacionNCapasMaven.ML.Usuario usuarioML);
+    Result GetByUsername(String Username);
 }

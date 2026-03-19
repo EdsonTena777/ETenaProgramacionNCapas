@@ -25,20 +25,147 @@ public class UsuarioDAOJPAImplementation implements iUsuarioJPA {
     private ModelMapper modelMapper;
     
     @Override
-    public Result GetAll(){
+    public Result GetByUsername(String username) {
         Result result = new Result();
-        try{
-            TypedQuery<Usuario> queryUsuario = entityManager.createQuery("FROM Usuario", Usuario.class);
-            List<Usuario> usuarios = queryUsuario.getResultList();
-            List<com.digis.com.ETenaProgramacionNCapasMaven.ML.Usuario> usuarioML = usuarios.stream().map(usuarioMapper -> modelMapper.map(usuarioMapper, com.digis.com.ETenaProgramacionNCapasMaven.ML.Usuario.class)).toList();
-            result.objects = (List) usuarioML;
+
+        try {
+            TypedQuery<com.digis.com.ETenaProgramacionNCapasMaven.JPA.Usuario> queryUsuario =
+                    entityManager.createQuery(
+                            "FROM Usuario WHERE Username = :pUsername",
+                            com.digis.com.ETenaProgramacionNCapasMaven.JPA.Usuario.class
+                    );
+
+            queryUsuario.setParameter("pUsername", username);
+
+            com.digis.com.ETenaProgramacionNCapasMaven.JPA.Usuario usuarioJPA = queryUsuario.getSingleResult();
+
+            com.digis.com.ETenaProgramacionNCapasMaven.ML.Usuario usuarioML =
+                    new com.digis.com.ETenaProgramacionNCapasMaven.ML.Usuario();
+
+            usuarioML.setUsername(usuarioJPA.getUsername());
+            usuarioML.setPassword(usuarioJPA.getPassword());
+            usuarioML.setStatus(usuarioJPA.getStatus());
+
+            if (usuarioJPA.getRoles() != null) {
+                com.digis.com.ETenaProgramacionNCapasMaven.ML.Rol rolML =
+                        new com.digis.com.ETenaProgramacionNCapasMaven.ML.Rol();
+
+                rolML.setNombreRol(usuarioJPA.getRoles().getNombreRol());
+                usuarioML.setRoles(rolML);
+            }
+
+            result.object = usuarioML;
             result.correct = true;
-        }catch(Exception ex){
+
+
+        } catch (Exception ex) {
             result.correct = false;
             result.errorMessage = ex.getLocalizedMessage();
             result.ex = ex;
         }
-    return result;    
+
+        return result;
+    }
+    
+    @Override
+    public Result GetAll() {
+        Result result = new Result();
+        try {
+            TypedQuery<Usuario> queryUsuario = entityManager.createQuery("FROM Usuario", Usuario.class);
+            List<Usuario> usuarios = queryUsuario.getResultList();
+
+            List<com.digis.com.ETenaProgramacionNCapasMaven.ML.Usuario> usuariosML = new ArrayList<>();
+
+            for (Usuario usuarioJPA : usuarios) {
+                com.digis.com.ETenaProgramacionNCapasMaven.ML.Usuario usuarioML =
+                        new com.digis.com.ETenaProgramacionNCapasMaven.ML.Usuario();
+
+                usuarioML.setIdUsuario(usuarioJPA.getIdUsuario());
+                usuarioML.setUsername(usuarioJPA.getUsername());
+                usuarioML.setImagen(usuarioJPA.getImagen());
+                usuarioML.setNombre(usuarioJPA.getNombre());
+                usuarioML.setApellidoPaterno(usuarioJPA.getApellidoPaterno());
+                usuarioML.setApellidoMaterno(usuarioJPA.getApellidoMaterno());
+                usuarioML.setEmail(usuarioJPA.getEmail());
+                usuarioML.setPassword(usuarioJPA.getPassword());
+                usuarioML.setFechaNacimiento(usuarioJPA.getFechaNacimiento());
+                usuarioML.setSexo(usuarioJPA.getSexo());
+                usuarioML.setTelefono(usuarioJPA.getTelefono());
+                usuarioML.setCelular(usuarioJPA.getCelular());
+                usuarioML.setCURP(usuarioJPA.getCURP());
+                usuarioML.setStatus(usuarioJPA.getStatus());
+
+                if (usuarioJPA.getRoles() != null) {
+                    com.digis.com.ETenaProgramacionNCapasMaven.ML.Rol rolML =
+                            new com.digis.com.ETenaProgramacionNCapasMaven.ML.Rol();
+
+                    rolML.setIdRol(usuarioJPA.getRoles().getIdRol());
+                    rolML.setNombreRol(usuarioJPA.getRoles().getNombreRol());
+
+                    usuarioML.setRoles(rolML);
+                }
+
+                List<com.digis.com.ETenaProgramacionNCapasMaven.ML.Direccion> direccionesML = new ArrayList<>();
+
+                if (usuarioJPA.getDirecciones() != null) {
+                    for (com.digis.com.ETenaProgramacionNCapasMaven.JPA.Direccion direccionJPA : usuarioJPA.getDirecciones()) {
+                        com.digis.com.ETenaProgramacionNCapasMaven.ML.Direccion direccionML =
+                                new com.digis.com.ETenaProgramacionNCapasMaven.ML.Direccion();
+
+                        direccionML.setIdDireccion(direccionJPA.getIdDireccion());
+                        direccionML.setCalle(direccionJPA.getCalle());
+                        direccionML.setNumeroInterior(direccionJPA.getNumeroInterior());
+                        direccionML.setNumeroExterior(direccionJPA.getNumeroExterior());
+
+                        if (direccionJPA.getColonia() != null) {
+                            com.digis.com.ETenaProgramacionNCapasMaven.ML.Colonia coloniaML =
+                                    new com.digis.com.ETenaProgramacionNCapasMaven.ML.Colonia();
+
+                            coloniaML.setIdColonia(direccionJPA.getColonia().getIdColonia());
+                            coloniaML.setNombre(direccionJPA.getColonia().getNombre());
+                            coloniaML.setCodigoPostal(direccionJPA.getColonia().getCodigoPostal());
+
+                            if (direccionJPA.getColonia().getMunicipio() != null) {
+                                com.digis.com.ETenaProgramacionNCapasMaven.ML.Municipio municipioML =
+                                        new com.digis.com.ETenaProgramacionNCapasMaven.ML.Municipio();
+
+                                municipioML.setIdMunicipio(direccionJPA.getColonia().getMunicipio().getIdMunicipio());
+                                municipioML.setNombre(direccionJPA.getColonia().getMunicipio().getNombre());
+
+                                if (direccionJPA.getColonia().getMunicipio().getEstado() != null) {
+                                    com.digis.com.ETenaProgramacionNCapasMaven.ML.Estado estadoML =
+                                            new com.digis.com.ETenaProgramacionNCapasMaven.ML.Estado();
+
+                                    estadoML.setIdEstado(direccionJPA.getColonia().getMunicipio().getEstado().getIdEstado());
+                                    estadoML.setNombre(direccionJPA.getColonia().getMunicipio().getEstado().getNombre());
+
+                                    municipioML.setEstado(estadoML);
+                                }
+
+                                coloniaML.setMunicipio(municipioML);
+                            }
+
+                            direccionML.setColonia(coloniaML);
+                        }
+
+                        direccionesML.add(direccionML);
+                    }
+                }
+
+                usuarioML.setDirecciones(direccionesML);
+
+                usuariosML.add(usuarioML);
+            }
+
+            result.objects = (List) usuariosML;
+            result.correct = true;
+
+        } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        return result;
     }
     @Override
     public Result GetAllDinamico(String nombre, String apellidoPaterno, String apellidoMaterno, String rol) {
